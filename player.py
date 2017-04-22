@@ -55,16 +55,9 @@ class Player:
 		self._converter.link(self._volume)
 		self._volume.link(self._output)
 
-	# This is not a safe method
-	#def __getattr__(self, nom):
-	#	if nom == "playing":
-	#		a, playerState, b = self._pipeline.get_state(Gst.CLOCK_TIME_NONE)
-	#		return playerState == Gst.State.PLAYING
-	#	elif nom == "paused":
-	#		a, playerState, b = self._pipeline.get_state(Gst.CLOCK_TIME_NONE)
-	#		return (playerState == Gst.State.PAUSED or playerState == Gst.State.READY)
-	#	else:
-	#		return object.__getattr__(self, nom)
+		bus = self._pipeline.get_bus()
+		bus.add_signal_watch()
+		bus.connect("message", self.on_pipeline_messages)
 
 	def setFilepath(self, filepath):
 		if os.path.exists(filepath):
@@ -91,6 +84,7 @@ class Player:
 	def stop(self):
 		self._pipeline.set_state(Gst.State.READY)
 		self._switchPlayButton("play")
+		self.playing = False
 
 	def on_playButton_clicked(self, button):
 		if self.playing:
@@ -104,6 +98,11 @@ class Player:
 	def on_decoder_addPad(self, bin, pad):
 		sink = self._queue.get_static_pad("sink")
 		pad.link(sink)
+
+	def on_pipeline_message(self, bus, message):
+		msgType = message.type
+		if msgType == Gst.MessageType.EOS:
+			self.stop()
 
 	def _switchPlayButton(self, state="default"):
 		label = self.playButton.get_children()[0]
