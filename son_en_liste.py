@@ -43,7 +43,8 @@ class SonEnListe:
 if __name__ == "__main__":
 	from main import SoundOrganiser
 	from lecture import Lecture
-	lecture = Lecture()
+	from player import Player
+	lecture = Lecture(Player())
 	window = SoundOrganiser()
 	lecture.addSongToList(SonEnListe(1, ["#", "!ln", "!s"]))
 	lecture.addSongToList(SonEnListe(2, ["1", "!q", "!ns"]))

@@ -91,110 +91,12 @@
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkBox" id="box5">
-                <property name="width_request">-1</property>
-                <property name="height_request">-1</property>
+              <object class="GtkBox" id="playerZone">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-                <property name="spacing">6</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkButton" id="playButton">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="relief">none</property>
-                    <signal name="clicked" handler="on_playButton_clicked" object="playButtonLabel" swapped="no"/>
-                    <child>
-                      <object class="GtkLabel" id="playButtonLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">⏵</property>
-                        <property name="track_visited_links">False</property>
-                        <attributes>
-                          <attribute name="style" value="normal"/>
-                          <attribute name="weight" value="ultraheavy"/>
-                          <attribute name="variant" value="normal"/>
-                          <attribute name="scale" value="2"/>
-                        </attributes>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="scale1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="adjustment">adjustmentPlayer</property>
-                    <property name="restrict_to_fill_level">False</property>
-                    <property name="fill_level">-1</property>
-                    <property name="round_digits">1</property>
-                    <property name="digits">0</property>
-                    <property name="draw_value">False</property>
-                    <property name="value_pos">right</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label3">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">0:00 / 20:03</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkVolumeButton" id="volumebutton1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="relief">none</property>
-                    <property name="orientation">vertical</property>
-                    <property name="adjustment">adjustmentVolume</property>
-                    <property name="icons">audio-volume-muted-symbolic
-audio-volume-high-symbolic
-audio-volume-low-symbolic
-audio-volume-medium-symbolic</property>
-                    <child internal-child="plus_button">
-                      <object class="GtkButton" id="volumebutton-plus_button1">
-                        <property name="label" translatable="yes">+</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                        <property name="relief">none</property>
-                      </object>
-                    </child>
-                    <child internal-child="minus_button">
-                      <object class="GtkButton" id="volumebutton-minus_button1">
-                        <property name="label" translatable="yes">-</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                        <property name="relief">none</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>

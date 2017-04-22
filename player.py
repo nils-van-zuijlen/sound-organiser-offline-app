@@ -1,0 +1,129 @@
+#!/usr/bin/python3
+# -*- coding:UTF-8 -*-
+
+import gi
+import os
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gst', '1.0')
+from gi.repository import Gtk, Gst
+
+class Player:
+	"""
+	Audio player element.
+	"""
+	def __init__(self):
+		# Creating normal vars
+		self.playing = False
+
+		# Creating the GUI
+		interface = Gtk.Builder()
+		interface.add_from_file('glade_windows/player.glade')
+
+		interface.connect_signals(self)
+
+		self.mainWidget = interface.get_object('player')
+		self.playButton = interface.get_object('playButton')
+		self.adjustmentVolume = interface.get_object('adjustmentVolume')
+		self.adjustmentPlayer = interface.get_object('adjustmentPlayer')
+		self.timeLabel = interface.get_object('timeLabel')
+
+		# Creating the GStreamer pipeline and filling it.
+		Gst.init_check()
+		self._pipeline = Gst.Pipeline.new("pipeline")
+
+		self._file_source = Gst.ElementFactory.make('filesrc', 'file-source')
+		self._pipeline.add(self._file_source)
+
+		self._decoder = Gst.ElementFactory.make('decodebin', 'decoder')
+		self._pipeline.add(self._decoder)
+
+		self._queue = Gst.ElementFactory.make('queue', 'queue')
+		self._pipeline.add(self._queue)
+
+		self._converter = Gst.ElementFactory.make('audioconvert', 'converter')
+		self._pipeline.add(self._converter)
+
+		self._volume = Gst.ElementFactory.make('volume', 'volume')
+		self._pipeline.add(self._volume)
+
+		self._output = Gst.ElementFactory.make('autoaudiosink', 'output')
+		self._pipeline.add(self._output)
+
+		self._file_source.link(self._decoder)
+		self._decoder.connect("pad-added", self.on_decoder_addPad)
+		self._queue.link(self._converter)
+		self._converter.link(self._volume)
+		self._volume.link(self._output)
+
+	# This is not a safe method
+	#def __getattr__(self, nom):
+	#	if nom == "playing":
+	#		a, playerState, b = self._pipeline.get_state(Gst.CLOCK_TIME_NONE)
+	#		return playerState == Gst.State.PLAYING
+	#	elif nom == "paused":
+	#		a, playerState, b = self._pipeline.get_state(Gst.CLOCK_TIME_NONE)
+	#		return (playerState == Gst.State.PAUSED or playerState == Gst.State.READY)
+	#	else:
+	#		return object.__getattr__(self, nom)
+
+	def setFilepath(self, filepath):
+		if os.path.exists(filepath):
+			filepath = os.path.realpath(filepath)
+			self.stop()
+			self._file_source.set_property("location", filepath)
+
+	def setVolume(self, volume):
+		self._volume.set_property("volume", float(volume))
+		self.adjustmentVolume.set_value(volume)
+
+	def play(self):
+		if not self.playing:
+			self._pipeline.set_state(Gst.State.PLAYING)
+			self._switchPlayButton("pause")
+			self.playing = True
+
+	def pause(self):
+		if self.playing:
+			self._pipeline.set_state(Gst.State.PAUSED)
+			self._switchPlayButton("play")
+			self.playing = False
+
+	def stop(self):
+		self._pipeline.set_state(Gst.State.READY)
+		self._switchPlayButton("play")
+
+	def on_playButton_clicked(self, button):
+		if self.playing:
+			self.pause()
+		else:
+			self.play()
+
+	def on_adjustmentVolume_changed(self, adjustment):
+		self._volume.set_property("volume", float(adjustment.get_value()))
+
+	def on_decoder_addPad(self, bin, pad):
+		sink = self._queue.get_static_pad("sink")
+		pad.link(sink)
+
+	def _switchPlayButton(self, state="default"):
+		label = self.playButton.get_children()[0]
+		if state == "default":
+			if label.get_text() == '⏸':
+				label.set_text('⏵')
+			else:
+				label.set_text('⏸')
+		elif state == "play":
+			label.set_text('⏵')
+		elif state == "pause":
+			label.set_text('⏸')
+
+if __name__ == '__main__':
+	import sys
+	from main import SoundOrganiser
+	from lecture import Lecture
+	player = Player()
+	lecture = Lecture(player)
+	window = SoundOrganiser()
+	window.setContent(lecture)
+	player.setFilepath(sys.argv[1])
+	Gtk.main()

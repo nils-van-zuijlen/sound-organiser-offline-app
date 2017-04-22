@@ -14,3 +14,6 @@ Here is [SoundOrganiser](//github.com/nils-van-zuijlen/sound-organiser). It's an
 
 To get an overview of the GUI, run `python3 son_en_liste.py`
 and `python3 lecture.py`.
+
+To see how it sounds while playing, run `python3 player.py /foo/bar/baz/a_music_file.<extension>`.
+`<extension>` could be mp3, ogg, wav, flac, or any supported by the `decodebin` element from GStreamer.
