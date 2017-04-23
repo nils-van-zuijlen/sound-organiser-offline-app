@@ -57,7 +57,7 @@ class Player:
 
 		bus = self._pipeline.get_bus()
 		bus.add_signal_watch()
-		bus.connect("message", self.on_pipeline_messages)
+		bus.connect("message", self.on_pipeline_message)
 
 	def setFilepath(self, filepath):
 		if os.path.exists(filepath):
@@ -118,11 +118,11 @@ class Player:
 
 if __name__ == '__main__':
 	import sys
-	from main import SoundOrganiser
+	from window import Window
 	from lecture import Lecture
 	player = Player()
 	lecture = Lecture(player)
-	window = SoundOrganiser()
+	window = Window()
 	window.setContent(lecture)
 	player.setFilepath(sys.argv[1])
 	Gtk.main()

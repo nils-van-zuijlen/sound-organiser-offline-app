@@ -5,19 +5,23 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-class SoundOrganiser:
+class Window:
 	"""
 	Classe de la fenêtre principale
 
 	Attributs:
 	- mainBox:
-		GtkBox principale, c'est elle qui contiendra la barre de menu et le contenu
+		GtkBox principale, c'est elle qui contiendra la barre de menu et le
+		contenu
 	- mainWidget:
 		GtkWindow principale, il s'agit de la fenêtre de l'application
 	"""
 
 	def __init__(self):
-		"""Récupération et instanciation d'une GtkWindow en fonction du template principal"""
+		"""
+		Récupération et instanciation d'une GtkWindow en fonction du template
+		principal
+		"""
 
 		interface = Gtk.Builder()
 		interface.add_from_file('glade_windows/principale.glade')
@@ -59,5 +63,5 @@ class SoundOrganiser:
 			self.mainWidget.unfullscreen()
 
 if __name__ == "__main__":
-	SoundOrganiser()
+	Window()
 	Gtk.main()

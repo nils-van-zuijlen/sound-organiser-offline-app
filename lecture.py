@@ -62,10 +62,10 @@ class Lecture:
 
 
 if __name__ == "__main__":
-	from main import SoundOrganiser
+	from window import Window
 	from player import Player
 	lecture = Lecture(Player())
-	window = SoundOrganiser()
+	window = Window()
 	window.setContent(lecture)
 	lecture.setTrans("current", ["&", "", "ln"])
 	lecture.setTrans("next", ["O", "n", "f"])

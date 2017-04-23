@@ -41,11 +41,11 @@ class SonEnListe:
 		self.songTrans.set_use_markup(True)
 
 if __name__ == "__main__":
-	from main import SoundOrganiser
+	from window import Window
 	from lecture import Lecture
 	from player import Player
 	lecture = Lecture(Player())
-	window = SoundOrganiser()
+	window = Window()
 	lecture.addSongToList(SonEnListe(1, ["#", "!ln", "!s"]))
 	lecture.addSongToList(SonEnListe(2, ["1", "!q", "!ns"]))
 	window.setContent(lecture)
