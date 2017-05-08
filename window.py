@@ -105,6 +105,10 @@ class Window:
 		print("filepath: ", filepath)
 		self._openFileCallback(filepath)
 
+	def on_credits_activate(self, aboutDialog):
+		aboutDialog.run()
+		aboutDialog.hide()
+
 	def _openFileCallback(self, filepath):
 		"""
 		Ouvre le fichier `filepath`.
