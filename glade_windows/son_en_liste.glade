@@ -9,54 +9,13 @@
     <property name="relief">none</property>
     <signal name="clicked" handler="on_song_clicked" swapped="no"/>
     <child>
-      <object class="GtkBox" id="box">
+      <object class="GtkLabel" id="label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkLabel" id="songTitle">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">label</property>
-            <attributes>
-              <attribute name="underline" value="True"/>
-              <attribute name="foreground" value="#00000000ffff"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="songDescr">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">label</property>
-            <attributes>
-              <attribute name="style" value="italic"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="songTrans">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">label</property>
-            <property name="use_markup">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
+        <property name="label" translatable="yes">&lt;span foreground="blue" underline="single"&gt;label&lt;/span&gt; &lt;span style="italic"&gt;label&lt;/span&gt; &lt;span&gt;label&lt;/span&gt;</property>
+        <property name="use_markup">True</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0</property>
       </object>
     </child>
   </object>

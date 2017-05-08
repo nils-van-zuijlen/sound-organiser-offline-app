@@ -16,9 +16,9 @@ def parseTrans(trans):
 		transition += "Erreur"
 
 	if len(trans[1]) > 0:
-		transition += "(" + _songTransToStr(trans[1]) + ")"
+		transition += " (" + _songTransToStr(trans[1]) + ")"
 
-	transition += "," + _songTransToStr(trans[2])
+	transition += ", " + _songTransToStr(trans[2])
 
 	return transition
 
@@ -39,6 +39,6 @@ def _songTransToStr(transcode):
 		transition += "Erreur"
 	
 	if ~ transcode.find("n"):
-		transition += "<span foreground=\"fuchsia\">Autonext</span>"
+		transition += " <span foreground=\"fuchsia\">Autonext</span>"
 
 	return transition

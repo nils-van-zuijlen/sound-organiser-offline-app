@@ -8,13 +8,9 @@
     </patterns>
   </object>
   <object class="GtkWindow" id="mainWindow">
-    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">SoundOrganiser</property>
-    <property name="default_width">500</property>
-    <property name="default_height">500</property>
     <property name="icon">../icon.svg</property>
-    <property name="gravity">static</property>
     <property name="has_resize_grip">True</property>
     <signal name="destroy" handler="on_mainWidget_destroy" swapped="no"/>
     <child>
@@ -47,12 +43,14 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem2">
+                      <object class="GtkImageMenuItem" id="openFile">
                         <property name="label">gtk-open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_openFile_activate" swapped="no"/>
+                        <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -62,13 +60,14 @@
                         <property name="label" translatable="yes">Récemment ouverts</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
-                          <object class="GtkRecentChooserMenu" id="recentchoosermenu2">
+                          <object class="GtkRecentChooserMenu" id="recentChooserMenu">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="filter">recentfilter</property>
                             <property name="limit">10</property>
                             <property name="show_not_found">False</property>
                             <property name="sort_type">mru</property>
+                            <signal name="item-activated" handler="on_recentChooserMenu_item_activated" swapped="no"/>
                           </object>
                         </child>
                       </object>
@@ -188,12 +187,13 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem10">
+                      <object class="GtkImageMenuItem" id="credits">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_credits_activate" object="aboutDialog" swapped="no"/>
                       </object>
                     </child>
                   </object>

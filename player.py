@@ -17,7 +17,7 @@ class Player:
 
 		# Creating the GUI
 		interface = Gtk.Builder()
-		interface.add_from_file('glade_windows/player.glade')
+		interface.add_from_file(os.path.realpath('glade_windows/player.glade'))
 
 		interface.connect_signals(self)
 
@@ -59,11 +59,17 @@ class Player:
 		bus.add_signal_watch()
 		bus.connect("message", self.on_pipeline_message)
 
-	def setFilepath(self, filepath):
+	def setFilepath(self, *filepath):
+		if len(filepath) == 1:
+			filepath = filepath[0]
+		else:
+			filepath = os.path.join(*filepath)
+
 		if os.path.exists(filepath):
 			filepath = os.path.realpath(filepath)
 			self.stop()
 			self._file_source.set_property("location", filepath)
+			self.stop()
 
 	def setVolume(self, volume):
 		self._volume.set_property("volume", float(volume))
@@ -124,5 +130,4 @@ if __name__ == '__main__':
 	lecture = Lecture(player)
 	window = Window()
 	window.setContent(lecture)
-	player.setFilepath(sys.argv[1])
 	Gtk.main()
