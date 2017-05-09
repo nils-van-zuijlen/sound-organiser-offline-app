@@ -11,23 +11,23 @@ from gi.repository import Gtk
 
 class Window:
 	"""
-	Classe de la fenêtre principale
+	Main window's class
 
-	Attributs:
+	Properties:
 	- mainBox:
-		GtkBox principale, c'est elle qui contiendra la barre de menu et le
-		contenu
+		main GtkBox, it'll contain the menu bar and the playing or editing GUI
 	- mainWidget:
-		GtkWindow principale, il s'agit de la fenêtre de l'application
+		main GtkWindow, the app's window
 	- parent:
-		Null ou application.
-		Possède une méthode `openFile(filepath)`.
+		Null or app defined in app.py
+		Has method `openFile(filepath)`.
 	"""
 
 	def __init__(self, parent=None):
 		"""
-		Récupération et instanciation d'une GtkWindow en fonction du template
-		principal
+		Creates the main GtkWindow from template
+
+		`parent` is the app stored in app.py
 		"""
 
 		interface = Gtk.Builder()
@@ -44,9 +44,9 @@ class Window:
 
 	def setContent(self, content):
 		"""
-		Définit le contenu principal de la fenêtre
+		Defines the main content of the window
 
-		Peut être l'interface de lecture ou d'édition
+		Can be the playing or editing GUI
 		"""
 
 		children = self.mainBox.get_children()
@@ -58,18 +58,16 @@ class Window:
 		self.mainWidget.show_all()
 
 	def on_mainWidget_destroy(self, widget):
-		"""
-		Gestion de l'évenement 'destruction' de la fenêtre
+		"""Exits from GTK's main loop on window's destroying"""
 
-		Quitte la boucle principale de Gtk
-		"""
+		# internal calls to close properly the current opened project
+		self.parent.closeFile()
 
+		# Exits the program
 		Gtk.main_quit()
 
 	def on_fullScreen_toggled(self, checkMenuItem):
-		"""
-		Passage ou sortie du plein écran en fonction de l'état du checkMenuItem
-		"""
+		"""(Un)Fullscreens the app when the checkMenuItem changes state"""
 
 		if checkMenuItem.get_active():
 			self.mainWidget.fullscreen()
@@ -77,9 +75,7 @@ class Window:
 			self.mainWidget.unfullscreen()
 
 	def on_openFile_activate(self, imageMenuItem):
-		"""
-		Ouverture d'un fichier
-		"""
+		"""Opening of a file"""
 
 		dialog = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.OPEN)
 		dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
@@ -90,14 +86,14 @@ class Window:
 		dialog.add_filter(fileFilter)
 		dialog.modal = True
 		reponse = dialog.run()
-		if reponse == Gtk.ResponseType.OK:
-			self._openFileCallback(dialog.get_filename())
-		dialog.destroy()
+		try:
+			if reponse == Gtk.ResponseType.OK:
+				self._openFileCallback(dialog.get_filename())
+		finally:
+			dialog.destroy()
 
 	def on_recentChooserMenu_item_activated(self, recentChooserMenu):
-		"""
-		Ouverture d'un fichier récent
-		"""
+		"""Opening of a recent file"""
 
 		uri = recentChooserMenu.get_current_uri()
 		print("uri: ", uri)
@@ -106,13 +102,13 @@ class Window:
 		self._openFileCallback(filepath)
 
 	def on_credits_activate(self, aboutDialog):
+		"""Shows the aboutDialog"""
+
 		aboutDialog.run()
 		aboutDialog.hide()
 
 	def _openFileCallback(self, filepath):
-		"""
-		Ouvre le fichier `filepath`.
-		"""
+		"""Open file located at `filepath`"""
 
 		if self.parent:
 			self.parent.openFile(filepath)

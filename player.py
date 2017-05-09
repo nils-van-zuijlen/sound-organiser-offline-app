@@ -10,6 +10,8 @@ from gi.repository import Gtk, Gst
 class Player:
 	"""
 	Audio player element.
+
+	A GUI and streaming element.
 	"""
 	def __init__(self):
 		# Creating normal vars
@@ -60,6 +62,8 @@ class Player:
 		bus.connect("message", self.on_pipeline_message)
 
 	def setFilepath(self, *filepath):
+		"""Sets the filepath of the file to be read"""
+		
 		if len(filepath) == 1:
 			filepath = filepath[0]
 		else:
@@ -72,45 +76,68 @@ class Player:
 			self.stop()
 
 	def setVolume(self, volume):
+		"""Sets the volume of the stream"""
+
 		self._volume.set_property("volume", float(volume))
 		self.adjustmentVolume.set_value(volume)
 
 	def play(self):
+		"""Starts the reading of the file"""
+		
 		if not self.playing:
 			self._pipeline.set_state(Gst.State.PLAYING)
 			self._switchPlayButton("pause")
 			self.playing = True
 
 	def pause(self):
+		"""Pauses the stream"""
+
 		if self.playing:
 			self._pipeline.set_state(Gst.State.PAUSED)
 			self._switchPlayButton("play")
 			self.playing = False
 
 	def stop(self):
+		"""Stops the reading of the file"""
+
 		self._pipeline.set_state(Gst.State.READY)
 		self._switchPlayButton("play")
 		self.playing = False
 
 	def on_playButton_clicked(self, button):
+		"""When the play/pause button is clicked"""
+
 		if self.playing:
 			self.pause()
 		else:
 			self.play()
 
 	def on_adjustmentVolume_changed(self, adjustment):
+		"""When the user changes the volume via the GUI"""
+
 		self._volume.set_property("volume", float(adjustment.get_value()))
 
 	def on_decoder_addPad(self, bin, pad):
+		"""When the stream's decoder has an available pad"""
+
 		sink = self._queue.get_static_pad("sink")
 		pad.link(sink)
 
 	def on_pipeline_message(self, bus, message):
+		"""When the pipeline emits messages via its bus"""
+
 		msgType = message.type
 		if msgType == Gst.MessageType.EOS:
 			self.stop()
 
 	def _switchPlayButton(self, state="default"):
+		"""
+		Changes the state of the GUI's play button.
+
+		If you want to do it externally, please call the `play`, `pause` or
+		`stop` method instead.
+		"""
+
 		label = self.playButton.get_children()[0]
 		if state == "default":
 			if label.get_text() == '⏸':

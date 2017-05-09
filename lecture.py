@@ -7,10 +7,10 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 from trans import parseTrans
-from son_en_liste import SonEnListe
+from song_list_item import SongListItem
 
 class Lecture:
-	""""""
+	"""Playing GUI"""
 
 	def __init__(self, player=None):
 		# Class vars
@@ -44,18 +44,28 @@ class Lecture:
 			self.setPlayer(player)
 
 	def addSongToList(self, song):
-		""""""
+		"""
+		Adds a song to the songList
+
+		`song` is a SongListItem
+		"""
 
 		self.songList.pack_start(song.mainWidget, False, False, 0)
 
 	def setPlayer(self, player):
+		"""
+		Sets the player
+
+		`player` may be a Player defined in player.py
+		"""
+		
 		if self.player:
 			for key, widget in enumerate(self._playerZone.get_children()):
 				self._playerZone.remove(widget)
 		self._playerZone.pack_start(player.mainWidget, True, True, 0)
 		self.player = player
 
-	def setTrans(self, where, trans):
+	def _setTrans(self, where, trans):
 		"""
 		Sets the transition for the 'current' or 'next' song.
 
@@ -70,10 +80,19 @@ class Lecture:
 			self._nextTrans.set_use_markup(True)
 
 	def setProjTitle(self, projTitle):
+		"""Sets the GUI project title"""
+		
 		self.projTitle.set_text(projTitle)
 
 	def setCurrentSong(self, song):
-		self.setTrans("current", song["trans"])
+		"""
+		Sets the current song
+
+		Stops the previous song and loads the new song in the player
+		Shows its characteristics in the GUI
+		"""
+		
+		self._setTrans("current", song["trans"])
 		self._currentTitle.set_text(song["name"])
 		self._currentDescr.set_text(song["descr"])
 		if self.player:
@@ -82,8 +101,15 @@ class Lecture:
 			self.player.setVolume(song["vol"])
 
 	def setNextSong(self, song=None):
+		"""
+		Sets the next song.
+
+		Shows its characteristics in the GUI.
+		If `song == None`, the GUI labels are cleared.
+		"""
+
 		if song:
-			self.setTrans("next", song["trans"])
+			self._setTrans("next", song["trans"])
 			self._nextTitle.set_text(song["name"])
 			self._nextDescr.set_text(song["descr"])
 		else:
@@ -92,6 +118,12 @@ class Lecture:
 			self._nextDescr.set_text("")
 
 	def selectSong(self, songDict):
+		"""
+		Selects song with its dictionary
+
+		Sets the current and next song if possible.
+		"""
+
 		songs = self.project["songs"]
 		if songs.count(songDict) > 0:
 			index = songs.index(songDict)
@@ -102,10 +134,14 @@ class Lecture:
 				self.setNextSong(None)
 
 	def openProj(self, project):
+		"""
+		Opens a project when its dictionary is passed as argument
+		"""
+
 		self.project = project
 		self.setProjTitle(project["name"])
 		for song in project["songs"]:
-			self.addSongToList(SonEnListe(song, self))
+			self.addSongToList(SongListItem(song, self))
 		if len(project["songs"]) > 0:
 			self.setCurrentSong(project["songs"][0])
 			if len(project["songs"]) > 1:
@@ -117,6 +153,6 @@ if __name__ == "__main__":
 	lecture = Lecture()
 	window = Window()
 	window.setContent(lecture)
-	lecture.setTrans("current", ["&", "", "ln"])
-	lecture.setTrans("next", ["O", "n", "f"])
+	lecture._setTrans("current", ["&", "", "ln"])
+	lecture._setTrans("next", ["O", "n", "f"])
 	Gtk.main()
