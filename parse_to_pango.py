@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding:UTF-8 -*-
 
-def parseTrans(trans):
+def parse_trans(trans):
 	transition = ""
 
 	if trans[0] == '1':
@@ -16,13 +16,13 @@ def parseTrans(trans):
 		transition += "Erreur"
 
 	if len(trans[1]) > 0:
-		transition += " (" + _songTransToStr(trans[1]) + ")"
+		transition += " (" + _parse_song_trans_to_str(trans[1]) + ")"
 
-	transition += ", " + _songTransToStr(trans[2])
+	transition += ", " + _parse_song_trans_to_str(trans[2])
 
 	return transition
 
-def _songTransToStr(transcode):
+def _parse_song_trans_to_str(transcode):
 	transition = ""
 
 	if ~ transcode.find("q"):
@@ -42,3 +42,14 @@ def _songTransToStr(transcode):
 		transition += " <span foreground=\"fuchsia\">Autonext</span>"
 
 	return transition
+
+def escape_pango_chars(string):
+	"""Escapes chars used in Pango markup like `&><`"""
+
+	chars = {"&": "&amp;", ">": "&lt;", "<": "&gt;"}
+
+	for char, escaped_char in enumerate(chars):
+		splited = string.split(char)
+		string = escaped_char.join(splited)
+
+	return string

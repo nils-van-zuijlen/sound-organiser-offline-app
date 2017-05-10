@@ -7,14 +7,14 @@
       <pattern>*.theatre</pattern>
     </patterns>
   </object>
-  <object class="GtkWindow" id="mainWindow">
+  <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">SoundOrganiser</property>
     <property name="icon">../icon.svg</property>
     <property name="has_resize_grip">True</property>
-    <signal name="destroy" handler="on_mainWidget_destroy" swapped="no"/>
+    <signal name="destroy" handler="on_main_widget_destroy" swapped="no"/>
     <child>
-      <object class="GtkBox" id="mainBox">
+      <object class="GtkBox" id="main_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
@@ -43,13 +43,13 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="openFile">
+                      <object class="GtkImageMenuItem" id="open_file">
                         <property name="label">gtk-open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_openFile_activate" swapped="no"/>
+                        <signal name="activate" handler="on_open_file_activate" swapped="no"/>
                         <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
@@ -60,14 +60,14 @@
                         <property name="label" translatable="yes">Récemment ouverts</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
-                          <object class="GtkRecentChooserMenu" id="recentChooserMenu">
+                          <object class="GtkRecentChooserMenu" id="recent_chooser_menu">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="filter">recentfilter</property>
                             <property name="limit">10</property>
                             <property name="show_not_found">False</property>
                             <property name="sort_type">mru</property>
-                            <signal name="item-activated" handler="on_recentChooserMenu_item_activated" swapped="no"/>
+                            <signal name="item-activated" handler="on_recent_chooser_menu_item_activated" swapped="no"/>
                           </object>
                         </child>
                       </object>
@@ -103,7 +103,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_mainWidget_destroy" object="mainWindow" swapped="no"/>
+                        <signal name="activate" handler="on_main_widget_destroy" object="main_window" swapped="no"/>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
@@ -163,12 +163,12 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkCheckMenuItem" id="fullScreen">
+                      <object class="GtkCheckMenuItem" id="full_screen">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label">Plein Écran</property>
                         <property name="use_underline">True</property>
-                        <signal name="toggled" handler="on_fullScreen_toggled" swapped="no"/>
+                        <signal name="toggled" handler="on_full_screen_toggled" swapped="no"/>
                         <accelerator key="F11" signal="activate"/>
                       </object>
                     </child>
@@ -193,7 +193,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_credits_activate" object="aboutDialog" swapped="no"/>
+                        <signal name="activate" handler="on_credits_activate" object="about_dialog" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -213,18 +213,18 @@
       </object>
     </child>
   </object>
-  <object class="GtkAboutDialog" id="aboutDialog">
+  <object class="GtkAboutDialog" id="about_dialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">À propos de Sound Organiser</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
-    <property name="transient_for">mainWindow</property>
+    <property name="transient_for">main_window</property>
     <property name="program_name">Sound Organiser</property>
     <property name="version">dev</property>
     <property name="website">github.com/nils-van-zuijlen/soundorganiseroffline</property>
     <property name="authors">Nils VAN ZUIJLEN
 Félix FAISANT</property>
-    <property name="logo">../../../Bureau/Sound Organiser.png</property>
+    <property name="logo">../icon.svg</property>
     <property name="license_type">gpl-3-0</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="aboutdialog-vbox1">

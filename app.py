@@ -22,23 +22,23 @@ class Main:
 		self.songs = []
 		self.filepath = False
 
-		self.window.setContent(self.lecture)
-		self.lecture.setPlayer(self.player)
+		self.window.set_content(self.lecture)
+		self.lecture.set_player(self.player)
 		self.window.show()
 
-	def openFile(self, filepath):
+	def open_file(self, filepath):
 		"""Opens the file located at `filepath`"""
 		if self.filepath:
-			self.closeFile()
+			self.close_file()
 		if os.path.exists(filepath):
 			self.filepath = os.path.realpath(filepath)
 			with open(self.filepath, "r") as file:
 				self.project = json.load(file)
 				if (not "path" in self.project) or (not self.project["path"]):
 					self.project["path"] = os.path.dirname(self.filepath)
-				self.lecture.openProj(self.project)
+				self.lecture.open_proj(self.project)
 
-	def closeFile(self):
+	def close_file(self):
 		"""Will close the opened project"""
 		pass
 
@@ -46,10 +46,10 @@ class Main:
 if __name__ == '__main__':
 	if len(sys.argv) >= 2:
 		args = sys.argv[1:]
-		filepath = os.path.join(os.getcwd(), args[len(args)-1])
+		filepath = os.path.join(os.getcwd(), args[-1])
 		app = Main()
 		try:
-			app.openFile(filepath)
+			app.open_file(filepath)
 		except:
 			print("Failed to open file {}".format(filepath))
 		Gtk.main()

@@ -2,18 +2,18 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkAdjustment" id="adjustmentPlayer">
+  <object class="GtkAdjustment" id="adjustment_player">
     <property name="upper">100</property>
     <property name="step_increment">0.01</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adjustmentVolume">
+  <object class="GtkAdjustment" id="adjustment_volume">
     <property name="upper">1</property>
     <property name="lower">0</property>
     <property name="value">1</property>
     <property name="step_increment">0.0001</property>
     <property name="page_increment">0.1</property>
-    <signal name="value-changed" handler="on_adjustmentVolume_changed" swapped="no"/>
+    <signal name="value-changed" handler="on_adjustment_volume_changed" swapped="no"/>
   </object>
   <object class="GtkBox" id="player">
     <property name="width_request">-1</property>
@@ -22,14 +22,14 @@
     <property name="can_focus">False</property>
     <property name="spacing">6</property>
     <child>
-      <object class="GtkButton" id="playButton">
+      <object class="GtkButton" id="play_button">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="relief">none</property>
-        <signal name="clicked" handler="on_playButton_clicked" swapped="no"/>
+        <signal name="clicked" handler="on_play_button_clicked" swapped="no"/>
         <child>
-          <object class="GtkLabel" id="playButtonLabel">
+          <object class="GtkLabel" id="play_button_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">⏵</property>
@@ -53,7 +53,7 @@
       <object class="GtkScale" id="scale1">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="adjustment">adjustmentPlayer</property>
+        <property name="adjustment">adjustment_player</property>
         <property name="restrict_to_fill_level">False</property>
         <property name="fill_level">-1</property>
         <property name="digits">0</property>
@@ -67,7 +67,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="timeLabel">
+      <object class="GtkLabel" id="time_label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">0:00 / 20:03</property>
@@ -85,7 +85,7 @@
         <property name="receives_default">True</property>
         <property name="relief">none</property>
         <property name="orientation">vertical</property>
-        <property name="adjustment">adjustmentVolume</property>
+        <property name="adjustment">adjustment_volume</property>
         <property name="icons">audio-volume-muted-symbolic
 audio-volume-high-symbolic
 audio-volume-low-symbolic

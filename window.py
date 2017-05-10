@@ -14,9 +14,9 @@ class Window:
 	Main window's class
 
 	Properties:
-	- mainBox:
+	- main_box:
 		main GtkBox, it'll contain the menu bar and the playing or editing GUI
-	- mainWidget:
+	- main_widget:
 		main GtkWindow, the app's window
 	- parent:
 		Null or app defined in app.py
@@ -35,83 +35,83 @@ class Window:
 
 		interface.connect_signals(self)
 
-		self.mainBox = interface.get_object('mainBox')
-		self.mainWidget = interface.get_object('mainWindow')
+		self.main_box = interface.get_object('main_box')
+		self.main_widget = interface.get_object('main_window')
 
-		self.mainWidget.maximize()
+		self.main_widget.maximize()
 
 		self.parent = parent
 
-	def setContent(self, content):
+	def set_content(self, content):
 		"""
 		Defines the main content of the window
 
 		Can be the playing or editing GUI
 		"""
 
-		children = self.mainBox.get_children()
+		children = self.main_box.get_children()
 		if len(children) != 1:
-			self.mainBox.remove(children[1])
-		self.mainBox.pack_start(content.mainWidget, True, True, 0)
+			self.main_box.remove(children[1])
+		self.main_box.pack_start(content.main_widget, True, True, 0)
 
 	def show(self):
-		self.mainWidget.show_all()
+		self.main_widget.show_all()
 
-	def on_mainWidget_destroy(self, widget):
+	def on_main_widget_destroy(self, widget):
 		"""Exits from GTK's main loop on window's destroying"""
 
 		# internal calls to close properly the current opened project
-		self.parent.closeFile()
+		self.parent.close_file()
 
 		# Exits the program
 		Gtk.main_quit()
 
-	def on_fullScreen_toggled(self, checkMenuItem):
-		"""(Un)Fullscreens the app when the checkMenuItem changes state"""
+	def on_full_screen_toggled(self, check_menu_item):
+		"""(Un)Fullscreens the app when the check_menu_item changes state"""
 
-		if checkMenuItem.get_active():
-			self.mainWidget.fullscreen()
+		if check_menu_item.get_active():
+			self.main_widget.fullscreen()
 		else:
-			self.mainWidget.unfullscreen()
+			self.main_widget.unfullscreen()
 
-	def on_openFile_activate(self, imageMenuItem):
+	def on_open_file_activate(self, image_menu_item):
 		"""Opening of a file"""
 
 		dialog = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.OPEN)
 		dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
 			Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
-		dialog.set_transient_for(self.mainWidget)
-		fileFilter = Gtk.FileFilter()
-		fileFilter.add_pattern("*.theatre")
-		dialog.add_filter(fileFilter)
+		dialog.set_transient_for(self.main_widget)
+		file_filter = Gtk.FileFilter()
+		file_filter.add_pattern("*.theatre")
+		dialog.add_filter(file_filter)
 		dialog.modal = True
 		reponse = dialog.run()
 		try:
 			if reponse == Gtk.ResponseType.OK:
-				self._openFileCallback(dialog.get_filename())
+				self._open_file_callback(dialog.get_filename())
 		finally:
 			dialog.destroy()
 
-	def on_recentChooserMenu_item_activated(self, recentChooserMenu):
+	def on_recent_chooser_menu_item_activated(self, recent_chooser_menu):
 		"""Opening of a recent file"""
 
-		uri = recentChooserMenu.get_current_uri()
+		uri = recent_chooser_menu.get_current_uri()
 		print("uri: ", uri)
 		filepath = parse.unquote(parse.urlsplit(uri).path)
 		print("filepath: ", filepath)
-		self._openFileCallback(filepath)
+		self._open_file_callback(filepath)
 
-	def on_credits_activate(self, aboutDialog):
-		"""Shows the aboutDialog"""
+	def on_credits_activate(self, about_dialog):
+		"""Shows the about_dialog"""
 
-		aboutDialog.run()
-		aboutDialog.hide()
+		about_dialog.run()
+		about_dialog.hide()
 
-	def _openFileCallback(self, filepath):
+	def _open_file_callback(self, filepath):
 		"""Open file located at `filepath`"""
 
 		if self.parent:
-			self.parent.openFile(filepath)
+			self.parent.open_file(filepath)
 		else:
 			print("window callback")
 			with open(filepath, "r") as file:

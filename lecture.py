@@ -6,7 +6,7 @@ from os.path import realpath
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from trans import parseTrans
+import parse_to_pango as ptp
 from song_list_item import SongListItem
 
 class Lecture:
@@ -23,36 +23,36 @@ class Lecture:
 		interface.connect_signals(self)
 
 		# Setting the GUI vars
-		self.mainWidget = interface.get_object('lecture')
-		self.projTitle = interface.get_object('projTitle')
-		self._currentTitle = interface.get_object('currentTitle')
-		self._currentDescr = interface.get_object('currentDescr')
-		self._currentTrans = interface.get_object('currentTrans')
-		self._nextSong = interface.get_object('nextSongBox')
-		self._nextTitle = interface.get_object('nextTitle')
-		self._nextDescr = interface.get_object('nextDescr')
-		self._nextTrans = interface.get_object('nextTrans')
-		self._playerZone = interface.get_object('playerZone')
+		self.main_widget = interface.get_object('lecture')
+		self.proj_title = interface.get_object('proj_title')
+		self._current_title = interface.get_object('current_title')
+		self._current_descr = interface.get_object('current_descr')
+		self._current_trans = interface.get_object('current_trans')
+		self._next_song = interface.get_object('next_song_box')
+		self._next_title = interface.get_object('next_title')
+		self._next_descr = interface.get_object('next_descr')
+		self._next_trans = interface.get_object('next_trans')
+		self._player_zone = interface.get_object('player_zone')
 
-		self.songList = Gtk.Box.new(Gtk.Orientation.VERTICAL, 3)
-		interface.get_object('songScroll').add(self.songList)
-		self.songList.show()
+		self.song_list = Gtk.Box.new(Gtk.Orientation.VERTICAL, 3)
+		interface.get_object('song_scroll').add(self.song_list)
+		self.song_list.show()
 		
 
 		# Setting the audio player
 		if player:
-			self.setPlayer(player)
+			self.set_player(player)
 
-	def addSongToList(self, song):
+	def add_song_to_list(self, song):
 		"""
-		Adds a song to the songList
+		Adds a song to the song_list
 
 		`song` is a SongListItem
 		"""
 
-		self.songList.pack_start(song.mainWidget, False, False, 0)
+		self.song_list.pack_start(song.main_widget, False, False, 0)
 
-	def setPlayer(self, player):
+	def set_player(self, player):
 		"""
 		Sets the player
 
@@ -60,31 +60,31 @@ class Lecture:
 		"""
 		
 		if self.player:
-			for key, widget in enumerate(self._playerZone.get_children()):
-				self._playerZone.remove(widget)
-		self._playerZone.pack_start(player.mainWidget, True, True, 0)
+			for key, widget in enumerate(self._player_zone.get_children()):
+				self._player_zone.remove(widget)
+		self._player_zone.pack_start(player.main_widget, True, True, 0)
 		self.player = player
 
-	def _setTrans(self, where, trans):
+	def _set_trans(self, where, trans):
 		"""
 		Sets the transition for the 'current' or 'next' song.
 
-		`trans` must be an array allowed by trans.parseTrans
+		`trans` must be an array allowed by parse_to_pango.parse_trans
 		"""
 
 		if where == "current":
-			self._currentTrans.set_text(parseTrans(trans))
-			self._currentTrans.set_use_markup(True)
+			self._current_trans.set_text(ptp.parse_trans(trans))
+			self._current_trans.set_use_markup(True)
 		elif where == "next":
-			self._nextTrans.set_text(parseTrans(trans))
-			self._nextTrans.set_use_markup(True)
+			self._next_trans.set_text(ptp.parse_trans(trans))
+			self._next_trans.set_use_markup(True)
 
-	def setProjTitle(self, projTitle):
+	def set_proj_title(self, proj_title):
 		"""Sets the GUI project title"""
 		
-		self.projTitle.set_text(projTitle)
+		self.proj_title.set_text(proj_title)
 
-	def setCurrentSong(self, song):
+	def set_current_song(self, song):
 		"""
 		Sets the current song
 
@@ -92,15 +92,15 @@ class Lecture:
 		Shows its characteristics in the GUI
 		"""
 		
-		self._setTrans("current", song["trans"])
-		self._currentTitle.set_text(song["name"])
-		self._currentDescr.set_text(song["descr"])
+		self._set_trans("current", song["trans"])
+		self._current_title.set_text(song["name"])
+		self._current_descr.set_text(song["descr"])
 		if self.player:
 			self.player.stop()
-			self.player.setFilepath(self.project["path"], song["file"])
-			self.player.setVolume(song["vol"])
+			self.player.set_filepath(self.project["path"], song["file"])
+			self.player.set_volume(song["vol"])
 
-	def setNextSong(self, song=None):
+	def set_next_song(self, song=None):
 		"""
 		Sets the next song.
 
@@ -109,15 +109,15 @@ class Lecture:
 		"""
 
 		if song:
-			self._setTrans("next", song["trans"])
-			self._nextTitle.set_text(song["name"])
-			self._nextDescr.set_text(song["descr"])
+			self._set_trans("next", song["trans"])
+			self._next_title.set_text(song["name"])
+			self._next_descr.set_text(song["descr"])
 		else:
-			self._nextTrans.set_text("")
-			self._nextTitle.set_text("")
-			self._nextDescr.set_text("")
+			self._next_trans.set_text("")
+			self._next_title.set_text("")
+			self._next_descr.set_text("")
 
-	def selectSong(self, songDict):
+	def select_song(self, song_dict):
 		"""
 		Selects song with its dictionary
 
@@ -125,27 +125,29 @@ class Lecture:
 		"""
 
 		songs = self.project["songs"]
-		if songs.count(songDict) > 0:
-			index = songs.index(songDict)
-			self.setCurrentSong(songs[index])
+		if songs.count(song_dict) > 0:
+			index = songs.index(song_dict)
+			self.set_current_song(songs[index])
 			if len(songs) > index+1:
-				self.setNextSong(songs[index+1])
+				self.set_next_song(songs[index+1])
 			else:
-				self.setNextSong(None)
+				self.set_next_song(None)
 
-	def openProj(self, project):
+	def open_proj(self, project):
 		"""
 		Opens a project when its dictionary is passed as argument
 		"""
 
 		self.project = project
-		self.setProjTitle(project["name"])
+		self.set_proj_title(project["name"])
 		for song in project["songs"]:
-			self.addSongToList(SongListItem(song, self))
+			self.add_song_to_list(SongListItem(song, self))
 		if len(project["songs"]) > 0:
-			self.setCurrentSong(project["songs"][0])
+			self.set_current_song(project["songs"][0])
 			if len(project["songs"]) > 1:
-				self.setNextSong(project["songs"][1])
+				self.set_next_song(project["songs"][1])
+			else:
+				self.set_next_song(None)
 
 
 if __name__ == "__main__":
@@ -153,6 +155,6 @@ if __name__ == "__main__":
 	lecture = Lecture()
 	window = Window()
 	window.setContent(lecture)
-	lecture._setTrans("current", ["&", "", "ln"])
-	lecture._setTrans("next", ["O", "n", "f"])
+	lecture._set_trans("current", ["&", "", "ln"])
+	lecture._set_trans("next", ["O", "n", "f"])
 	Gtk.main()

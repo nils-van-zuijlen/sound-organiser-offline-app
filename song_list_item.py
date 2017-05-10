@@ -6,12 +6,12 @@ from os.path import realpath
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from trans import parseTrans
+import parse_to_pango as ptp
 
 class SongListItem:
 	"""Song list item"""
 
-	def __init__(self, songDict, parent = None):
+	def __init__(self, song_dict, parent = None):
 		self.parent = parent
 
 		interface = Gtk.Builder()
@@ -19,53 +19,53 @@ class SongListItem:
 
 		interface.connect_signals(self)
 
-		self.mainWidget = interface.get_object('song')
-		self.songLabel = interface.get_object('label')
+		self.main_widget = interface.get_object('song')
+		self.song_label = interface.get_object('label')
 
-		self.songDict = songDict
-		self.songDict["parsedTrans"] = parseTrans(self.songDict["trans"])
-		self._setLabel()
+		self.song_dict = song_dict
+		self.song_dict["parsed_trans"] = ptp.parse_trans(self.song_dict["trans"])
+		self._set_label()
 
 	def on_song_clicked(self, label):
 		"""Loads the song in the player"""
 
-		print("song {} clicked.".format(self.songDict["name"]))
+		print("song {} clicked.".format(self.song_dict["name"]))
 		if self.parent:
-			self.parent.selectSong(self.songDict)
+			self.parent.select_song(self.song_dict)
 
-	def setTrans(self, transition):
+	def set_trans(self, transition):
 		"""
 		Sets the transition of the song
 		
-		trans is an array allowed by trans.parseTrans
+		trans is an array allowed by parse_to_pango.parse_trans
 		"""
 
-		self.songDict["parsedTrans"] = parseTrans(transition)
-		self.songDict["trans"] = transition
+		self.song_dict["parsed_trans"] = ptp.parse_trans(transition)
+		self.song_dict["trans"] = transition
 
-	def _setLabel(self):
+	def _set_label(self):
 		"""
 		Sets the GUI label
 
-		With the vars `self.songDict["name"]`, `self.songDict["descr"]` and
-		`self.songDict["parsedTrans"]`.
+		With the vars `self.song_dict["name"]`, `self.song_dict["descr"]` and
+		`self.song_dict["parsed_trans"]`.
 		"""
 
 		text = "<b>"
-		text += self.songDict["name"]
+		text += ptp.escape_pango_chars(self.song_dict["name"])
 		text += "</b> <i>"
-		text += self.songDict["descr"]
+		text += ptp.escape_pango_chars(self.song_dict["descr"])
 		text += "</i> "
-		text += self.songDict["parsedTrans"]
-		self.songLabel.set_text(text)
-		self.songLabel.set_use_markup(True)
+		text += self.song_dict["parsed_trans"]
+		self.song_label.set_text(text)
+		self.song_label.set_use_markup(True)
 
 if __name__ == "__main__":
 	from window import Window
 	from lecture import Lecture
 	lecture = Lecture()
 	window = Window()
-	song = {"name": "songTitle", "descr": "songDescr", "trans": ["1", "", "s"]}
-	lecture.addSongToList(SongListItem(song))
-	window.setContent(lecture)
+	song = {"name": "song_title", "descr": "song_descr", "trans": ["1", "", "s"]}
+	lecture.add_song_to_list(SongListItem(song))
+	window.set_content(lecture)
 	Gtk.main()

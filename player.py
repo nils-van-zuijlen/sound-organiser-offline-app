@@ -23,11 +23,11 @@ class Player:
 
 		interface.connect_signals(self)
 
-		self.mainWidget = interface.get_object('player')
-		self.playButton = interface.get_object('playButton')
-		self.adjustmentVolume = interface.get_object('adjustmentVolume')
-		self.adjustmentPlayer = interface.get_object('adjustmentPlayer')
-		self.timeLabel = interface.get_object('timeLabel')
+		self.main_widget = interface.get_object('player')
+		self.play_button = interface.get_object('play_button')
+		self.adjustment_volume = interface.get_object('adjustment_volume')
+		self.adjustment_player = interface.get_object('adjustment_player')
+		self.time_label = interface.get_object('time_label')
 
 		# Creating the GStreamer pipeline and filling it.
 		Gst.init_check()
@@ -52,7 +52,7 @@ class Player:
 		self._pipeline.add(self._output)
 
 		self._file_source.link(self._decoder)
-		self._decoder.connect("pad-added", self.on_decoder_addPad)
+		self._decoder.connect("pad-added", self.on_decoder_add_pad)
 		self._queue.link(self._converter)
 		self._converter.link(self._volume)
 		self._volume.link(self._output)
@@ -61,7 +61,7 @@ class Player:
 		bus.add_signal_watch()
 		bus.connect("message", self.on_pipeline_message)
 
-	def setFilepath(self, *filepath):
+	def set_filepath(self, *filepath):
 		"""Sets the filepath of the file to be read"""
 		
 		if len(filepath) == 1:
@@ -69,24 +69,30 @@ class Player:
 		else:
 			filepath = os.path.join(*filepath)
 
-		if os.path.exists(filepath):
+		self.stop()
+
+		try:
+			assert os.path.exists(filepath)
+		except AssertionError:
+			print("file {} doesn't exist".format(filepath))
+			self._file_source.set_property("location", None)
+		else:
 			filepath = os.path.realpath(filepath)
-			self.stop()
 			self._file_source.set_property("location", filepath)
 			self.stop()
 
-	def setVolume(self, volume):
+	def set_volume(self, volume):
 		"""Sets the volume of the stream"""
 
 		self._volume.set_property("volume", float(volume))
-		self.adjustmentVolume.set_value(volume)
+		self.adjustment_volume.set_value(volume)
 
 	def play(self):
 		"""Starts the reading of the file"""
 		
 		if not self.playing:
 			self._pipeline.set_state(Gst.State.PLAYING)
-			self._switchPlayButton("pause")
+			self._switch_play_button("pause")
 			self.playing = True
 
 	def pause(self):
@@ -94,17 +100,17 @@ class Player:
 
 		if self.playing:
 			self._pipeline.set_state(Gst.State.PAUSED)
-			self._switchPlayButton("play")
+			self._switch_play_button("play")
 			self.playing = False
 
 	def stop(self):
 		"""Stops the reading of the file"""
 
 		self._pipeline.set_state(Gst.State.READY)
-		self._switchPlayButton("play")
+		self._switch_play_button("play")
 		self.playing = False
 
-	def on_playButton_clicked(self, button):
+	def on_play_button_clicked(self, button):
 		"""When the play/pause button is clicked"""
 
 		if self.playing:
@@ -112,12 +118,12 @@ class Player:
 		else:
 			self.play()
 
-	def on_adjustmentVolume_changed(self, adjustment):
+	def on_adjustment_volume_changed(self, adjustment):
 		"""When the user changes the volume via the GUI"""
 
 		self._volume.set_property("volume", float(adjustment.get_value()))
 
-	def on_decoder_addPad(self, bin, pad):
+	def on_decoder_add_pad(self, bin, pad):
 		"""When the stream's decoder has an available pad"""
 
 		sink = self._queue.get_static_pad("sink")
@@ -126,11 +132,11 @@ class Player:
 	def on_pipeline_message(self, bus, message):
 		"""When the pipeline emits messages via its bus"""
 
-		msgType = message.type
-		if msgType == Gst.MessageType.EOS:
+		msg_type = message.type
+		if msg_type == Gst.MessageType.EOS:
 			self.stop()
 
-	def _switchPlayButton(self, state="default"):
+	def _switch_play_button(self, state="default"):
 		"""
 		Changes the state of the GUI's play button.
 
@@ -138,7 +144,7 @@ class Player:
 		`stop` method instead.
 		"""
 
-		label = self.playButton.get_children()[0]
+		label = self.play_button.get_children()[0]
 		if state == "default":
 			if label.get_text() == '⏸':
 				label.set_text('⏵')
@@ -156,5 +162,5 @@ if __name__ == '__main__':
 	player = Player()
 	lecture = Lecture(player)
 	window = Window()
-	window.setContent(lecture)
+	window.set_content(lecture)
 	Gtk.main()
