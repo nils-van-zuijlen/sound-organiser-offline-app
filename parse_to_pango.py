@@ -48,8 +48,8 @@ def escape_pango_chars(string):
 
 	chars = {"&": "&amp;", ">": "&lt;", "<": "&gt;"}
 
-	for char, escaped_char in enumerate(chars):
-		splited = string.split(char)
+	for char, escaped_char in chars.items():
+		splited = string.split(str(char))
 		string = escaped_char.join(splited)
 
 	return string
