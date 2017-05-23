@@ -49,7 +49,6 @@ class Lecture:
 
 		`song` is a SongListItem
 		"""
-
 		self.song_list.pack_start(song.main_widget, False, False, 0)
 
 	def set_player(self, player):
@@ -58,7 +57,6 @@ class Lecture:
 
 		`player` may be a Player defined in player.py
 		"""
-		
 		if self.player:
 			for key, widget in enumerate(self._player_zone.get_children()):
 				self._player_zone.remove(widget)
@@ -71,7 +69,6 @@ class Lecture:
 
 		`trans` must be an array allowed by parse_to_pango.parse_trans
 		"""
-
 		if where == "current":
 			self._current_trans.set_text(ptp.parse_trans(trans))
 			self._current_trans.set_use_markup(True)
@@ -81,7 +78,6 @@ class Lecture:
 
 	def set_proj_title(self, proj_title):
 		"""Sets the GUI project title"""
-		
 		self.proj_title.set_text(proj_title)
 
 	def set_current_song(self, song):
@@ -91,7 +87,6 @@ class Lecture:
 		Stops the previous song and loads the new song in the player
 		Shows its characteristics in the GUI
 		"""
-		
 		self._set_trans("current", song["trans"])
 		self._current_title.set_text(song["name"])
 		self._current_descr.set_text(song["descr"])
@@ -107,7 +102,6 @@ class Lecture:
 		Shows its characteristics in the GUI.
 		If `song == None`, the GUI labels are cleared.
 		"""
-
 		if song:
 			self._set_trans("next", song["trans"])
 			self._next_title.set_text(song["name"])
@@ -123,7 +117,6 @@ class Lecture:
 
 		Sets the current and next song if possible.
 		"""
-
 		songs = self.project["songs"]
 		if songs.count(song_dict) > 0:
 			index = songs.index(song_dict)
@@ -137,7 +130,6 @@ class Lecture:
 		"""
 		Opens a project when its dictionary is passed as argument
 		"""
-
 		self.project = project
 		self.set_proj_title(project["name"])
 		for song in project["songs"]:

@@ -29,7 +29,6 @@ class Window:
 
 		`parent` is the app stored in app.py
 		"""
-
 		interface = Gtk.Builder()
 		interface.add_from_file(realpath('glade_windows/principale.glade'))
 
@@ -48,7 +47,6 @@ class Window:
 
 		Can be the playing or editing GUI
 		"""
-
 		children = self.main_box.get_children()
 		if len(children) != 1:
 			self.main_box.remove(children[1])
@@ -59,16 +57,16 @@ class Window:
 
 	def on_main_widget_destroy(self, widget):
 		"""Exits from GTK's main loop on window's destroying"""
-
-		# internal calls to close properly the current opened project
-		self.parent.close_file()
+		try: # internal calls to close properly the current opened project
+			self.parent.close_file()
+		except NotImplementedError:
+			print("App function to close properly the files is not currently implemented.")
 
 		# Exits the program
 		Gtk.main_quit()
 
 	def on_full_screen_toggled(self, check_menu_item):
 		"""(Un)Fullscreens the app when the check_menu_item changes state"""
-
 		if check_menu_item.get_active():
 			self.main_widget.fullscreen()
 		else:
@@ -76,7 +74,6 @@ class Window:
 
 	def on_open_file_activate(self, image_menu_item):
 		"""Opening of a file"""
-
 		dialog = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.OPEN)
 		dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
 			Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
@@ -94,22 +91,20 @@ class Window:
 
 	def on_recent_chooser_menu_item_activated(self, recent_chooser_menu):
 		"""Opening of a recent file"""
-
 		uri = recent_chooser_menu.get_current_uri()
 		print("uri: ", uri)
 		filepath = parse.unquote(parse.urlsplit(uri).path)
 		print("filepath: ", filepath)
 		self._open_file_callback(filepath)
 
-	def on_credits_activate(self, about_dialog):
+	@staticmethod
+	def on_credits_activate(about_dialog):
 		"""Shows the about_dialog"""
-
 		about_dialog.run()
 		about_dialog.hide()
 
 	def _open_file_callback(self, filepath):
 		"""Open file located at `filepath`"""
-
 		if self.parent:
 			self.parent.open_file(filepath)
 		else:

@@ -28,8 +28,6 @@ class SongListItem:
 
 	def on_song_clicked(self, label):
 		"""Loads the song in the player"""
-
-		print("song {} clicked.".format(self.song_dict["name"]))
 		if self.parent:
 			self.parent.select_song(self.song_dict)
 
@@ -39,7 +37,6 @@ class SongListItem:
 		
 		trans is an array allowed by parse_to_pango.parse_trans
 		"""
-
 		self.song_dict["parsed_trans"] = ptp.parse_trans(transition)
 		self.song_dict["trans"] = transition
 
@@ -50,7 +47,6 @@ class SongListItem:
 		With the vars `self.song_dict["name"]`, `self.song_dict["descr"]` and
 		`self.song_dict["parsed_trans"]`.
 		"""
-
 		text = "<b>"
 		text += ptp.escape_pango_chars(self.song_dict["name"])
 		text += "</b> <i>"

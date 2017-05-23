@@ -2,6 +2,17 @@
 # -*- coding:UTF-8 -*-
 
 def parse_trans(trans):
+	"""
+	Parses the transition array in order to show the song's transition and type
+
+	The transition array is like ["type", "transition1", "transition2"] where
+	"transition1" can be empty, BUT not missing.
+
+	"type" is in the form ^[1&#O]$
+	"transition1" and "transition2" are in the form ^![qslfr]?n?$
+
+	Calls _parse_song_trans_to_str in order to parse the transcodes
+	"""
 	transition = ""
 
 	if trans[0] == '1':
@@ -23,6 +34,11 @@ def parse_trans(trans):
 	return transition
 
 def _parse_song_trans_to_str(transcode):
+	"""
+	Parses a transcode.
+
+	A transcode is in the form ^![qslfr]?n?$
+	"""
 	transition = ""
 
 	if ~ transcode.find("q"):
@@ -45,7 +61,6 @@ def _parse_song_trans_to_str(transcode):
 
 def escape_pango_chars(string):
 	"""Escapes chars used in Pango markup like `&><`"""
-
 	chars = {"&": "&amp;", ">": "&lt;", "<": "&gt;"}
 
 	for char, escaped_char in chars.items():

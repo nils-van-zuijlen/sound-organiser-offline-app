@@ -40,7 +40,7 @@ class Main:
 
 	def close_file(self):
 		"""Will close the opened project"""
-		pass
+		raise NotImplementedError()
 
 
 if __name__ == '__main__':
