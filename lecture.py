@@ -15,6 +15,8 @@ class Lecture:
 	def __init__(self, player=None):
 		# Class vars
 		self.player = None
+		self.songs = []
+		self.project = None
 
 		# Loading the GUI from file
 		interface = Gtk.Builder()
@@ -50,6 +52,7 @@ class Lecture:
 		`song` is a SongListItem
 		"""
 		self.song_list.pack_start(song.main_widget, False, False, 0)
+		self.songs.append(song)
 
 	def set_player(self, player):
 		"""
@@ -126,7 +129,7 @@ class Lecture:
 			else:
 				self.set_next_song(None)
 
-	def open_proj(self, project):
+	def open_project(self, project):
 		"""
 		Opens a project when its dictionary is passed as argument
 		"""
@@ -141,6 +144,19 @@ class Lecture:
 			else:
 				self.set_next_song(None)
 
+	def close_project(self):
+		self.player.reset()
+		self.project = None
+		for child in self.song_list.get_children():
+			child.destroy()
+		self.songs = []
+		self.set_proj_title("")
+		self._current_trans.set_text("")
+		self._current_title.set_text("")
+		self._current_descr.set_text("")
+		self._next_trans.set_text("")
+		self._next_title.set_text("")
+		self._next_descr.set_text("")
 
 if __name__ == "__main__":
 	from window import Window

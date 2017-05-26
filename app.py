@@ -20,7 +20,7 @@ class Main:
 		self.lecture = lecture.Lecture()
 		self.player = player.Player()
 		self.songs = []
-		self.filepath = False
+		self.filepath = ""
 
 		self.window.set_content(self.lecture)
 		self.lecture.set_player(self.player)
@@ -36,12 +36,12 @@ class Main:
 				self.project = json.load(file)
 				if (not "path" in self.project) or (not self.project["path"]):
 					self.project["path"] = os.path.dirname(self.filepath)
-				self.lecture.open_proj(self.project)
+				self.lecture.open_project(self.project)
 
 	def close_file(self):
 		"""Will close the opened project"""
-		raise NotImplementedError()
-
+		self.lecture.close_project()
+		self.filepath = ""
 
 if __name__ == '__main__':
 	if len(sys.argv) >= 2:

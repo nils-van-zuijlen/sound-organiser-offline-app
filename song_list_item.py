@@ -31,6 +31,9 @@ class SongListItem:
 		if self.parent:
 			self.parent.select_song(self.song_dict)
 
+	def on_song_destroy(self, widget):
+		self = None
+
 	def set_trans(self, transition):
 		"""
 		Sets the transition of the song

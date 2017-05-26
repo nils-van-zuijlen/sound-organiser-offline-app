@@ -57,13 +57,16 @@ class Window:
 
 	def on_main_widget_destroy(self, widget):
 		"""Exits from GTK's main loop on window's destroying"""
-		try: # internal calls to close properly the current opened project
-			self.parent.close_file()
-		except NotImplementedError:
-			print("App function to close properly the files is not currently implemented.")
+
+		# internal calls to close properly the current opened project
+		self.parent.close_file()
 
 		# Exits the program
 		Gtk.main_quit()
+
+	def on_gtk_close_activate(self, widget):
+		"""Close the current project without exitting the app"""
+		self.parent.close_file()
 
 	def on_full_screen_toggled(self, check_menu_item):
 		"""(Un)Fullscreens the app when the check_menu_item changes state"""
@@ -82,9 +85,9 @@ class Window:
 		file_filter.add_pattern("*.theatre")
 		dialog.add_filter(file_filter)
 		dialog.modal = True
-		reponse = dialog.run()
+		answer = dialog.run()
 		try:
-			if reponse == Gtk.ResponseType.OK:
+			if answer == Gtk.ResponseType.OK:
 				self._open_file_callback(dialog.get_filename())
 		finally:
 			dialog.destroy()
