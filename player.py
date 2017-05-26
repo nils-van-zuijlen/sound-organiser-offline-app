@@ -5,7 +5,7 @@ import gi
 import os
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gst", "1.0")
-from gi.repository import Gtk, Gst
+from gi.repository import Gtk, Gst, GLib
 
 class Player:
 	"""
@@ -17,6 +17,7 @@ class Player:
 	def __init__(self):
 		# Creating normal vars
 		self.playing = False
+		self.duration = Gst.CLOCK_TIME_NONE
 
 		# Creating the GUI
 		interface = Gtk.Builder()
@@ -86,6 +87,7 @@ class Player:
 			self._pipeline.set_state(Gst.State.PLAYING)
 			self._switch_play_button("pause")
 			self.playing = True
+			GLib.timeout_add(100, self.time_update)
 
 	def pause(self):
 		"""Pauses the stream"""
@@ -102,6 +104,7 @@ class Player:
 		"""
 		self._pipeline.set_state(Gst.State.READY)
 		self._switch_play_button("play")
+		self.time_update()
 		self.playing = False
 
 	def reset(self):
@@ -121,6 +124,39 @@ class Player:
 		self.playing = False
 		self._switch_play_button("play")
 		_, self.duration = self._pipeline.query_duration(Gst.Format.TIME)
+		self.time_update()
+
+	def convert_ns(self, time):
+		"""Converts a number of nanoseconds in a readable time"""
+		s, ns = divmod(time, Gst.SECOND)
+		m, s = divmod(s, 60)
+
+		if m < 60:
+			return "%02i:%02i" % (m, s)
+		else:
+			h, m = divmod(m, 60)
+			return "%i:%02i:%02i" % (h, m, s)
+
+	def time_update(self):
+		"""Updates the showed time in the slider and label"""
+		if self.duration == Gst.CLOCK_TIME_NONE:
+			success, self.duration = self._pipeline.query_duration(Gst.Format.TIME)
+			if success:
+				# setting the slider's range to the song duration
+				self.scale_position.set_range(0, self.duration / Gst.SECOND)
+			else:
+				self.duration = Gst.CLOCK_TIME_NONE
+
+		# querying the current position
+		success, position = self._pipeline.query_position(Gst.Format.TIME)
+		if success:
+			# setting the slider to the position
+			self.adjustment_position.set_value(float(position) / Gst.SECOND)
+
+			if self.duration != Gst.CLOCK_TIME_NONE:
+				self.time_label.set_text(self.convert_ns(position) + " / " + self.convert_ns(self.duration))
+
+		return self.playing
 
 	def on_play_button_clicked(self, button):
 		"""When the play/pause button is clicked"""
@@ -143,6 +179,8 @@ class Player:
 		msg_type = message.type
 		if msg_type == Gst.MessageType.EOS:
 			self.stop()
+		elif msg_type == Gst.MessageType.DURATION_CHANGED:
+			self.duration = Gst.CLOCK_TIME_NONE
 
 	def _switch_play_button(self, state="default"):
 		"""
