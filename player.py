@@ -30,8 +30,11 @@ class Player:
 		self.play_button_label = interface.get_object("play_button_label")
 		self.adjustment_volume = interface.get_object("adjustment_volume")
 		self.adjustment_position = interface.get_object("adjustment_position")
-		self.scale_position = interface.get_object("scale_position")
+		self.slider_position = interface.get_object("scale_position")
 		self.time_label = interface.get_object("time_label")
+
+		self.slider_seek_handler_id = self.slider_position.connect(
+			"value-changed", self.on_slider_seek)
 
 		# Creating the GStreamer pipeline and filling it.
 		Gst.init_check()
@@ -144,7 +147,7 @@ class Player:
 			success, self.duration = self._pipeline.query_duration(Gst.Format.TIME)
 			if success:
 				# setting the slider's range to the song duration
-				self.scale_position.set_range(0, self.duration / Gst.SECOND)
+				self.slider_position.set_range(0, self.duration / Gst.SECOND)
 			else:
 				self.duration = Gst.CLOCK_TIME_NONE
 
@@ -152,7 +155,10 @@ class Player:
 		success, position = self._pipeline.query_position(Gst.Format.TIME)
 		if success:
 			# setting the slider to the position
+			# during this, we 'escape' the seeking
+			self.slider_position.handler_block(self.slider_seek_handler_id)
 			self.adjustment_position.set_value(float(position) / Gst.SECOND)
+			self.slider_position.handler_unblock(self.slider_seek_handler_id)
 
 			if self.duration != Gst.CLOCK_TIME_NONE:
 				self.time_label.set_text(self.convert_ns(position) + " / " + self.convert_ns(self.duration))
@@ -169,6 +175,11 @@ class Player:
 	def on_adjustment_volume_changed(self, adjustment):
 		"""When the user changes the volume via the GUI"""
 		self._volume.set_property("volume", float(adjustment.get_value()))
+
+	def on_slider_seek(self, widget):
+		seek_time = self.slider_position.get_value()
+		self._pipeline.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, seek_time * Gst.SECOND)
+		self.time_update()
 
 	def on_decoder_add_pad(self, bin, pad):
 		"""When the stream's decoder has an available pad"""
