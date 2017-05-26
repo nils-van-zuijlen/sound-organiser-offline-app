@@ -30,7 +30,7 @@ class Window:
 		`parent` is the app stored in app.py
 		"""
 		interface = Gtk.Builder()
-		interface.add_from_file(realpath('glade_windows/principale.glade'))
+		interface.add_from_file(realpath('glade_windows/window.glade'))
 
 		interface.connect_signals(self)
 
