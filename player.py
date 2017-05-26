@@ -27,6 +27,7 @@ class Player:
 
 		self.main_widget = interface.get_object("player")
 		self.play_button = interface.get_object("play_button")
+		self.play_button_label = interface.get_object("play_button_label")
 		self.adjustment_volume = interface.get_object("adjustment_volume")
 		self.adjustment_position = interface.get_object("adjustment_position")
 		self.scale_position = interface.get_object("scale_position")
@@ -193,16 +194,17 @@ class Player:
 		"default" invert the actual state of the button.
 		"play" and "pause" shows the symbol for play and pause, respectively.
 		"""
-		label = self.play_button.get_children()[0]
+		PLAY = "⏵"
+		PAUSE = "⏸"
 		if state == "default":
-			if label.get_text() == "⏸":
-				label.set_text("⏵")
+			if self.play_button_label.get_text() == PAUSE:
+				self.play_button_label.set_text(PLAY)
 			else:
-				label.set_text("⏸")
+				self.play_button_label.set_text(PAUSE)
 		elif state == "play":
-			label.set_text("⏵")
+			self.play_button_label.set_text(PLAY)
 		elif state == "pause":
-			label.set_text("⏸")
+			self.play_button_label.set_text(PAUSE)
 
 if __name__ == "__main__":
 	import sys
