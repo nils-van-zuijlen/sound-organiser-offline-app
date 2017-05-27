@@ -137,10 +137,10 @@ class Player:
 		m, s = divmod(s, 60)
 
 		if m < 60:
-			return "%02i:%02i" % (m, s)
+			return "{0:02d}:{1:02d}".format(m, s)
 		else:
 			h, m = divmod(m, 60)
-			return "%i:%02i:%02i" % (h, m, s)
+			return "{0:d}:{1:02d}:{2:02d}".format(h, m, s)
 
 	def time_update(self):
 		"""Updates the showed time in the slider and label"""
