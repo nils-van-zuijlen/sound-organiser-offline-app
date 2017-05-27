@@ -32,6 +32,7 @@ class SongListItem:
 			self.parent.select_song(self.song_dict)
 
 	def on_song_destroy(self, widget):
+		self.song_dict = {}
 		self = None
 
 	def set_trans(self, transition):

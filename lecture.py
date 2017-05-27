@@ -145,6 +145,7 @@ class Lecture:
 				self.set_next_song(None)
 
 	def close_project(self):
+		"""Close the current opened project."""
 		self.player.reset()
 		self.project = None
 		for child in self.song_list.get_children():

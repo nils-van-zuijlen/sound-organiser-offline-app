@@ -130,7 +130,8 @@ class Player:
 		_, self.duration = self._pipeline.query_duration(Gst.Format.TIME)
 		self.time_update()
 
-	def convert_ns(self, time):
+	@staticmethod
+	def convert_ns(time):
 		"""Converts a number of nanoseconds in a readable time"""
 		s, ns = divmod(time, Gst.SECOND)
 		m, s = divmod(s, 60)
