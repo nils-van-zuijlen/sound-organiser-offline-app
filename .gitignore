@@ -87,7 +87,11 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# SublimeText files
 *.sublime-project
 *.sublime-workspace
 terminal.glue
+
+# Glade backups
 *.glade~

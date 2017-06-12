@@ -9,7 +9,7 @@ def parse_trans(trans):
 	"transition1" can be empty, BUT not missing.
 
 	"type" is in the form ^[1&#O]$
-	"transition1" and "transition2" are in the form ^![qslfr]?n?$
+	"transition1" and "transition2" are in the form ^!?[qslfr]?n?$
 
 	Calls _parse_song_trans_to_str in order to parse the transcodes
 	"""
@@ -37,7 +37,7 @@ def _parse_song_trans_to_str(transcode):
 	"""
 	Parses a transcode.
 
-	A transcode is in the form ^![qslfr]?n?$
+	A transcode is in the form ^!?[qslfr]?n?$
 	"""
 	transition = ""
 

@@ -114,12 +114,13 @@ class Lecture:
 			self._next_title.set_text("")
 			self._next_descr.set_text("")
 
-	def select_song(self, song_dict):
+	def select_song(self, song):
 		"""
-		Selects song with its dictionary
+		Selects song
 
 		Sets the current and next song if possible.
 		"""
+		song_dict = song.song_dict
 		songs = self.project["songs"]
 		if songs.count(song_dict) > 0:
 			index = songs.index(song_dict)
@@ -163,7 +164,8 @@ if __name__ == "__main__":
 	from window import Window
 	lecture = Lecture()
 	window = Window()
-	window.setContent(lecture)
+	window.set_content(lecture)
 	lecture._set_trans("current", ["&", "", "ln"])
 	lecture._set_trans("next", ["O", "n", "f"])
+	window.show()
 	Gtk.main()

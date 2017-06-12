@@ -59,10 +59,11 @@ class Window:
 		"""Exits from GTK's main loop on window's destroying"""
 
 		# internal calls to close properly the current opened project
-		self.parent.close_file()
-
-		# Exits the program
-		Gtk.main_quit()
+		try:
+			self.parent.close_file()
+		finally:
+			# Exits the program
+			Gtk.main_quit()
 
 	def on_gtk_close_activate(self, widget):
 		"""Close the current project without exitting the app"""
@@ -118,5 +119,5 @@ class Window:
 				print("<<<")
 
 if __name__ == "__main__":
-	Window()
+	Window().show()
 	Gtk.main()

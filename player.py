@@ -226,4 +226,5 @@ if __name__ == "__main__":
 	lecture = Lecture(player)
 	window = Window()
 	window.set_content(lecture)
+	window.show()
 	Gtk.main()

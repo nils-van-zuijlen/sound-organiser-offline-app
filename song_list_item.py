@@ -27,9 +27,9 @@ class SongListItem:
 		self._set_label()
 
 	def on_song_clicked(self, label):
-		"""Loads the song in the player"""
+		"""Loads the song in the parent"""
 		if self.parent:
-			self.parent.select_song(self.song_dict)
+			self.parent.select_song(self)
 
 	def on_song_destroy(self, widget):
 		self.song_dict = {}
@@ -68,4 +68,5 @@ if __name__ == "__main__":
 	song = {"name": "song_title", "descr": "song_descr", "trans": ["1", "", "s"]}
 	lecture.add_song_to_list(SongListItem(song))
 	window.set_content(lecture)
+	window.show()
 	Gtk.main()

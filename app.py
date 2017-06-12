@@ -52,6 +52,7 @@ if __name__ == '__main__':
 			app.open_file(filepath)
 		except:
 			print("Failed to open file {}".format(filepath))
+			app.close_file()
 		Gtk.main()
 	else:
 		Main()
