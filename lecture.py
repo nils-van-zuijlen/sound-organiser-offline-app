@@ -15,6 +15,7 @@ class Lecture:
 	def __init__(self, player=None):
 		# Class vars
 		self.player = None
+		self.parent = None
 		self.songs = []
 		self.project = None
 

@@ -51,6 +51,7 @@ class Window:
 		if len(children) != 1:
 			self.main_box.remove(children[1])
 		self.main_box.pack_start(content.main_widget, True, True, 0)
+		content.parent = self
 
 	def show(self):
 		self.main_widget.show_all()

@@ -43,6 +43,17 @@ class SongListItem:
 		"""
 		self.song_dict["parsed_trans"] = ptp.parse_trans(transition)
 		self.song_dict["trans"] = transition
+		self._set_label()
+
+	def set_title(self, title):
+		"""Sets the title of the song"""
+		self.song_dict["name"] = title
+		self._set_label()
+
+	def set_descr(self, descr):
+		"""Sets the description of the song"""
+		self.song_dict["descr"] = descr
+		self._set_label()
 
 	def _set_label(self):
 		"""
