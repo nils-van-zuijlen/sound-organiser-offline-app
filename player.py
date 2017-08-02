@@ -7,7 +7,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Gst", "1.0")
 from gi.repository import Gtk, Gst, GLib
 
-class Player:
+class Player(object):
 	"""
 	Audio player element.
 
@@ -219,12 +219,4 @@ class Player:
 			self.play_button_label.set_text(PAUSE)
 
 if __name__ == "__main__":
-	import sys
-	from window import Window
-	from lecture import Lecture
-	player = Player()
-	lecture = Lecture(player)
-	window = Window()
-	window.set_content(lecture)
-	window.show()
-	Gtk.main()
+	print("Please run app.py")

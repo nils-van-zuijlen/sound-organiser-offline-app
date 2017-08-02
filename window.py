@@ -9,7 +9,10 @@ from os.path import realpath
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-class Window:
+from lecture import Lecture
+from editor import Editor
+
+class Window(object):
 	"""
 	Main window's class
 
@@ -36,6 +39,8 @@ class Window:
 
 		self.main_box = interface.get_object('main_box')
 		self.main_widget = interface.get_object('main_window')
+		self.lecture_placeholder = interface.get_object('lecture_placeholder')
+		self.editor_placeholder = interface.get_object('editor_placeholder')
 
 		self.main_widget.maximize()
 
@@ -47,11 +52,12 @@ class Window:
 
 		Can be the playing or editing GUI
 		"""
-		children = self.main_box.get_children()
-		if len(children) != 1:
-			self.main_box.remove(children[1])
-		self.main_box.pack_start(content.main_widget, True, True, 0)
-		content.parent = self
+		if isinstance(content, Lecture):
+			self.lecture_placeholder.pack_start(content.main_widget, True, True, 0)
+			content.parent = self
+		elif isinstance(content, Editor):
+			self.editor_placeholder.pack_start(content.main_widget, True, True, 0)
+			content.parent = self
 
 	def show(self):
 		self.main_widget.show_all()
@@ -119,6 +125,12 @@ class Window:
 				print(json.load(file))
 				print("<<<")
 
+	def on_active_tab_changed(self, notebook, page, page_number):
+		"""When the user changes active tab"""
+		if page_number:
+			self.parent.switch_to_edit_mode()
+		else:
+			self.parent.switch_to_playing_mode()
+
 if __name__ == "__main__":
-	Window().show()
-	Gtk.main()
+	print("Please run app.py")

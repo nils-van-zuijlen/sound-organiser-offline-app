@@ -9,7 +9,7 @@ from gi.repository import Gtk
 from parse_to_pango import parse_trans
 from song_list_item import SongListItem
 
-class Editor:
+class Editor(object):
     """Project editing interface."""
     def __init__(self):
         # Creating some vars
@@ -40,7 +40,7 @@ class Editor:
         interface.get_object("song_scroll").add(self.song_list)
         self.song_list.show()
 
-    def on_projtitle_changed(self, widget):
+    def on_projtitle_changed(self, widget, *_):
         """Called when the user edits the project's title"""
         self.project["name"] = widget.get_text()
 
@@ -98,11 +98,13 @@ class Editor:
         finally:
             dialog.destroy()
 
-    def on_trans_ok_clicked(self, widget):
+    @staticmethod
+    def on_trans_ok_clicked(widget):
         """Send an OK response to the widget"""
         widget.response(Gtk.ResponseType.OK)
 
-    def on_trans_cancel_clicked(self, widget):
+    @staticmethod
+    def on_trans_cancel_clicked(widget):
         """Send a CANCEL response to the widget"""
         widget.response(Gtk.ResponseType.CANCEL)
 
@@ -110,11 +112,11 @@ class Editor:
         """Called when the user changes the filepath in the selector."""
         self.set_file(widget.get_filename())
 
-    def on_songtitle_changed(self, widget):
+    def on_songtitle_changed(self, widget, *_):
         """Called when the user edits the current song's title"""
         self.current_song.set_title(widget.get_text())
 
-    def on_songdescr_changed(self, widget):
+    def on_songdescr_changed(self, widget, *_):
         """Called when the user edits the current song's description"""
         self.current_song.set_descr(widget.get_text())
 
@@ -198,16 +200,16 @@ class Editor:
         if len(project["songs"]) > 0:
             self.select_song(self.songs[0])
 
+    def close_project(self):
+        """Close the current opened project."""
+        self.project = None
+        for child in self.song_list.get_children():
+            child.destroy()
+        self.songs = []
+        self._set_proj_title("")
+        self.songtransition_label.set_markup("")
+        self.songtitle_buffer.set_text("", -1)
+        self.songdescription_buffer.set_text("", -1)
+
 if __name__ == "__main__":
-    from window import Window
-    editor = Editor()
-    window = Window()
-    window.set_content(editor)
-    editor.project = {"path": "/", "name": "Project's title"}
-    song = SongListItem({"name": "Titre du son", "file": "home/user/test.mp3",
-        "vol": 0.7, "trans": ["&", "", "ln"], "descr": "Une petite description"
-        }, editor)
-    editor.add_song_to_list(song)
-    editor.select_song(song)
-    window.show()
-    Gtk.main()
+    print("Please run app.py")

@@ -8,7 +8,7 @@ from gi.repository import Gtk
 
 import parse_to_pango as ptp
 
-class SongListItem:
+class SongListItem(object):
 	"""Song list item"""
 
 	def __init__(self, song_dict, parent = None):
@@ -72,12 +72,4 @@ class SongListItem:
 		self.song_label.set_use_markup(True)
 
 if __name__ == "__main__":
-	from window import Window
-	from lecture import Lecture
-	lecture = Lecture()
-	window = Window()
-	song = {"name": "song_title", "descr": "song_descr", "trans": ["1", "", "s"]}
-	lecture.add_song_to_list(SongListItem(song))
-	window.set_content(lecture)
-	window.show()
-	Gtk.main()
+	print("Please run app.py")
