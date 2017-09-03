@@ -16,6 +16,7 @@ class Editor(object):
         self.songs = []
         self.project = {}
         self.parent = None
+        self.is_current_edited = False
 
         # Loading the GUI from file
         interface = Gtk.Builder()
@@ -43,6 +44,7 @@ class Editor(object):
     def on_projtitle_changed(self, widget, *_):
         """Called when the user edits the project's title"""
         self.project["name"] = widget.get_text()
+        self.is_current_edited = True
 
     def on_transition_edit(self, widget):
         """When the edit transition button is activated."""
@@ -95,6 +97,7 @@ class Editor(object):
                     new_trans[2] += "n"
                 # setting the new transition
                 self.set_trans(new_trans)
+                self.is_current_edited = True
         finally:
             dialog.destroy()
 
@@ -111,18 +114,22 @@ class Editor(object):
     def on_filepath_changed(self, widget):
         """Called when the user changes the filepath in the selector."""
         self.set_file(widget.get_filename())
+        self.is_current_edited = True
 
     def on_songtitle_changed(self, widget, *_):
         """Called when the user edits the current song's title"""
         self.current_song.set_title(widget.get_text())
+        self.is_current_edited = True
 
     def on_songdescr_changed(self, widget, *_):
         """Called when the user edits the current song's description"""
         self.current_song.set_descr(widget.get_text())
+        self.is_current_edited = True
 
     def on_songvol_changed(self, widget):
         """Called when the user edits the current song's volume"""
         self.current_song.song_dict["vol"] = widget.get_value()
+        self.is_current_edited = True
 
     def add_song_to_list(self, song):
         """
@@ -199,9 +206,18 @@ class Editor(object):
             self.add_song_to_list(SongListItem(song, self))
         if len(project["songs"]) > 0:
             self.select_song(self.songs[0])
+        self.is_current_edited = True
 
     def close_project(self):
         """Close the current opened project."""
+        if self.is_current_edited:
+            answer = self.parent.close_with_edited_file_dialog.run()
+            self.parent.close_with_edited_file_dialog.hide()
+            assert answer != Gtk.ResponseType.CANCEL
+            if answer == Gtk.ResponseType.ACCEPT:
+                self.save_project()
+
+        # Destroy all class stored data
         self.project = None
         for child in self.song_list.get_children():
             child.destroy()
@@ -210,6 +226,10 @@ class Editor(object):
         self.songtransition_label.set_markup("")
         self.songtitle_buffer.set_text("", -1)
         self.songdescription_buffer.set_text("", -1)
+
+    def save_project(self):
+        """Save the opened project"""
+        self.parent.parent.save_project(self.project)
 
 if __name__ == "__main__":
     print("Please run app.py")

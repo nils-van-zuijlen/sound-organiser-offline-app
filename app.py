@@ -50,6 +50,25 @@ class Main(object):
 		self.current.close_project()
 		self.filepath = ""
 
+	def save_project(self, project, is_save_as=False):
+		"""Save the project passed as argument"""
+		if is_save_as or not self.filepath:
+			file_filter = Gtk.FileFilter()
+			file_filter.add_pattern("*.theatre")
+			dialog = Gtk.FileChooserDialog(parent=window.main_widget,
+				action=Gtk.FileChooserAction.SAVE, do_overwrite_confirmation=True,
+				filter=file_filter)
+			if is_save_as:
+				dialog.set_filename(self.filepath)
+			else:
+				dialog.set_current_filename("Nouveau projet.theatre")
+			dialog.run()
+			self.filepath = os.path.realpath(dialog.get_filename())
+			dialog.destroy()
+
+		with open(self.filepath, "w") as file_queried:
+			json.dump(project, file_queried)
+
 	def switch_to_edit_mode(self):
 		"""Switches the interface from playing mode to editing mode."""
 		self.lecture.close_project()
