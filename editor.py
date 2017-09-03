@@ -74,6 +74,7 @@ class Editor(object):
         ans = dialog.run()
         try:
             if ans == Gtk.ResponseType.OK:
+                self.is_current_edited = True
                 new_trans = []
                 # testing if the type is valid or fallback to One
                 if ttype.get_active_id():
@@ -97,7 +98,6 @@ class Editor(object):
                     new_trans[2] += "n"
                 # setting the new transition
                 self.set_trans(new_trans)
-                self.is_current_edited = True
         finally:
             dialog.destroy()
 
@@ -216,6 +216,7 @@ class Editor(object):
             assert answer != Gtk.ResponseType.CANCEL
             if answer == Gtk.ResponseType.ACCEPT:
                 self.save_project()
+            self.is_current_edited = False
 
         # Destroy all class stored data
         self.project = None
