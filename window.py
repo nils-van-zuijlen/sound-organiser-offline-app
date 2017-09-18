@@ -3,7 +3,6 @@
 
 import gi
 import json
-import re
 from urllib import parse
 from os.path import realpath
 gi.require_version('Gtk', '3.0')
@@ -79,7 +78,7 @@ class Window(object):
         """Send a ACCEPT response to the widget"""
         widget.response(Gtk.ResponseType.ACCEPT)
 
-    def on_main_widget_destroy(self, widget):
+    def on_main_widget_destroy(self, _):
         """Exits from GTK's main loop on window's destroying"""
 
         # internal calls to close properly the current opened project
@@ -89,7 +88,7 @@ class Window(object):
             # Exits the program
             Gtk.main_quit()
 
-    def on_gtk_close_activate(self, widget):
+    def on_gtk_close_activate(self, _):
         """Close the current project without exitting the app"""
         self.parent.close_file()
 
@@ -100,7 +99,7 @@ class Window(object):
         else:
             self.main_widget.unfullscreen()
 
-    def on_open_file_activate(self, image_menu_item):
+    def on_open_file_activate(self, _):
         """Opening of a file"""
         dialog = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.OPEN)
         dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
@@ -137,12 +136,12 @@ class Window(object):
             self.parent.open_file(filepath)
         else:
             print("window callback")
-            with open(filepath, "r") as file:
+            with open(filepath, "r") as file_queried:
                 print(">>>")
-                print(json.load(file))
+                print(json.load(file_queried))
                 print("<<<")
 
-    def on_active_tab_changed(self, notebook, page, page_number):
+    def on_active_tab_changed(self, _, _, page_number):
         """When the user changes active tab"""
         if page_number:
             self.parent.switch_to_edit_mode()

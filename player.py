@@ -133,7 +133,7 @@ class Player(object):
 	@staticmethod
 	def convert_ns(time):
 		"""Converts a number of nanoseconds in a readable time"""
-		s, ns = divmod(time, Gst.SECOND)
+		s, _ = divmod(time, Gst.SECOND)
 		m, s = divmod(s, 60)
 
 		if m < 60:
@@ -166,7 +166,7 @@ class Player(object):
 
 		return self.playing
 
-	def on_play_button_clicked(self, button):
+	def on_play_button_clicked(self, _):
 		"""When the play/pause button is clicked"""
 		if self.playing:
 			self.pause()
@@ -177,17 +177,17 @@ class Player(object):
 		"""When the user changes the volume via the GUI"""
 		self._volume.set_property("volume", float(adjustment.get_value()))
 
-	def on_slider_seek(self, widget):
+	def on_slider_seek(self, _):
 		seek_time = self.slider_position.get_value()
 		self._pipeline.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, seek_time * Gst.SECOND)
 		self.time_update()
 
-	def on_decoder_add_pad(self, bin, pad):
+	def on_decoder_add_pad(self, _, pad):
 		"""When the stream's decoder has an available pad"""
 		sink = self._queue.get_static_pad("sink")
 		pad.link(sink)
 
-	def on_pipeline_message(self, bus, message):
+	def on_pipeline_message(self, _, message):
 		"""When the pipeline emits messages via its bus"""
 		msg_type = message.type
 		if msg_type == Gst.MessageType.EOS:

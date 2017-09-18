@@ -46,7 +46,7 @@ class Editor(object):
         self.project["name"] = widget.get_text()
         self.is_current_edited = True
 
-    def on_transition_edit(self, widget):
+    def on_transition_edit(self, _):
         """When the edit transition button is activated."""
         interface = Gtk.Builder()
         interface.add_from_file(

@@ -26,12 +26,12 @@ class SongListItem(object):
 		self.song_dict["parsed_trans"] = ptp.parse_trans(self.song_dict["trans"])
 		self._set_label()
 
-	def on_song_clicked(self, label):
+	def on_song_clicked(self, _):
 		"""Loads the song in the parent"""
 		if self.parent:
 			self.parent.select_song(self)
 
-	def on_song_destroy(self, widget):
+	def on_song_destroy(self, _):
 		self.song_dict = {}
 		self = None
 
