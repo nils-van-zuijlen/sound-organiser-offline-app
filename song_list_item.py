@@ -1,7 +1,15 @@
 #!/usr/bin/python3
-# -*- coding:UTF-8 -*-
+# -*- coding:utf-8 -*-
 
-import gi
+try:
+    import pgi
+    pgi.install_as_gi()
+except ImportError:
+    pass
+try:
+    import gi
+except ImportError as e:
+    raise ImportError("Python bindings for gobject are not available. Please install them.")
 from os.path import realpath
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
