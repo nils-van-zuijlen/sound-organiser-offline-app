@@ -62,7 +62,7 @@ class Lecture(object):
         `player` may be a Player defined in player.py
         """
         if self.player:
-            for key, widget in enumerate(self._player_zone.get_children()):
+            for widget in self._player_zone.get_children():
                 self._player_zone.remove(widget)
         self._player_zone.pack_start(player.main_widget, True, True, 0)
         self.player = player
