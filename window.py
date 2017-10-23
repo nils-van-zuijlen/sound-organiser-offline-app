@@ -141,7 +141,7 @@ class Window(object):
                 print(json.load(file_queried))
                 print("<<<")
 
-    def on_active_tab_changed(self, _, _, page_number):
+    def on_active_tab_changed(self, _, __, page_number):
         """When the user changes active tab"""
         if page_number:
             self.parent.switch_to_edit_mode()
