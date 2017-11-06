@@ -1,6 +1,7 @@
 # SoundOrganiser's offline app
 
-[![Build Status](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app.svg?branch=master)](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app) [![Code Health](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master/landscape.svg?style=flat)](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master)
+[![Build Status](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app.svg?branch=master)](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app) [![Code Health](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master/landscape.svg?style=flat)](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master) [![Dependency Status](https://gemnasium.com/badges/github.com/nils-van-zuijlen/sound-organiser-offline-app.svg)](https://gemnasium.com/github.com/nils-van-zuijlen/sound-organiser-offline-app)
+
 
 Here is [SoundOrganiser](//github.com/nils-van-zuijlen/sound-organiser). It's an
 audio player to use in plays.
