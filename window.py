@@ -1,123 +1,160 @@
 #!/usr/bin/python3
-# -*- coding:UTF-8 -*-
+# -*- coding:utf-8 -*-
 
-import gi
+try:
+    import pgi
+    pgi.install_as_gi()
+except ImportError:
+    pass
+try:
+    import gi
+except ImportError as e:
+    raise ImportError("Python bindings for gobject are not available. Please install them.")
 import json
-import re
 from urllib import parse
 from os.path import realpath
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-class Window:
-	"""
-	Main window's class
+from lecture import Lecture
+from editor import Editor
 
-	Properties:
-	- main_box:
-		main GtkBox, it'll contain the menu bar and the playing or editing GUI
-	- main_widget:
-		main GtkWindow, the app's window
-	- parent:
-		Null or app defined in app.py
-		Has method `openFile(filepath)`.
-	"""
+class Window(object):
+    """
+    Main window's class
 
-	def __init__(self, parent=None):
-		"""
-		Creates the main GtkWindow from template
+    Properties:
+    - main_box:
+        main GtkBox, it'll contain the menu bar and the playing or editing GUI
+    - main_widget:
+        main GtkWindow, the app's window
+    - parent:
+        Null or app defined in app.py
+        Has method `openFile(filepath)`.
+    """
 
-		`parent` is the app stored in app.py
-		"""
-		interface = Gtk.Builder()
-		interface.add_from_file(realpath('glade_windows/window.glade'))
+    def __init__(self, parent=None):
+        """
+        Creates the main GtkWindow from template
 
-		interface.connect_signals(self)
+        `parent` is the app stored in app.py
+        """
+        interface = Gtk.Builder()
+        interface.add_from_file(realpath('glade_windows/window.glade'))
 
-		self.main_box = interface.get_object('main_box')
-		self.main_widget = interface.get_object('main_window')
+        interface.connect_signals(self)
 
-		self.main_widget.maximize()
+        self.main_box = interface.get_object('main_box')
+        self.main_widget = interface.get_object('main_window')
+        self.lecture_placeholder = interface.get_object('lecture_placeholder')
+        self.editor_placeholder = interface.get_object('editor_placeholder')
+        self.close_with_edited_file_dialog = interface.get_object(
+            'close_with_edited_file_dialog')
 
-		self.parent = parent
+        self.main_widget.maximize()
 
-	def set_content(self, content):
-		"""
-		Defines the main content of the window
+        self.parent = parent
 
-		Can be the playing or editing GUI
-		"""
-		children = self.main_box.get_children()
-		if len(children) != 1:
-			self.main_box.remove(children[1])
-		self.main_box.pack_start(content.main_widget, True, True, 0)
+    def set_content(self, content):
+        """
+        Defines the main content of the window
 
-	def show(self):
-		self.main_widget.show_all()
+        Can be the playing or editing GUI
+        """
+        if isinstance(content, Lecture):
+            self.lecture_placeholder.pack_start(content.main_widget, True, True, 0)
+            content.parent = self
+        elif isinstance(content, Editor):
+            self.editor_placeholder.pack_start(content.main_widget, True, True, 0)
+            content.parent = self
 
-	def on_main_widget_destroy(self, widget):
-		"""Exits from GTK's main loop on window's destroying"""
+    def show(self):
+        self.main_widget.show_all()
 
-		# internal calls to close properly the current opened project
-		try:
-			self.parent.close_file()
-		finally:
-			# Exits the program
-			Gtk.main_quit()
+    @staticmethod
+    def on_close_without_saving_clicked(widget):
+        """Send a REJECT response to the widget"""
+        widget.response(Gtk.ResponseType.REJECT)
 
-	def on_gtk_close_activate(self, widget):
-		"""Close the current project without exitting the app"""
-		self.parent.close_file()
+    @staticmethod
+    def on_cancel_close_clicked(widget):
+        """Send a CANCEL response to the widget"""
+        widget.response(Gtk.ResponseType.CANCEL)
 
-	def on_full_screen_toggled(self, check_menu_item):
-		"""(Un)Fullscreens the app when the check_menu_item changes state"""
-		if check_menu_item.get_active():
-			self.main_widget.fullscreen()
-		else:
-			self.main_widget.unfullscreen()
+    @staticmethod
+    def on_save_before_closing_clicked(widget):
+        """Send a ACCEPT response to the widget"""
+        widget.response(Gtk.ResponseType.ACCEPT)
 
-	def on_open_file_activate(self, image_menu_item):
-		"""Opening of a file"""
-		dialog = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.OPEN)
-		dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-			Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
-		dialog.set_transient_for(self.main_widget)
-		file_filter = Gtk.FileFilter()
-		file_filter.add_pattern("*.theatre")
-		dialog.add_filter(file_filter)
-		dialog.modal = True
-		answer = dialog.run()
-		try:
-			if answer == Gtk.ResponseType.OK:
-				self._open_file_callback(dialog.get_filename())
-		finally:
-			dialog.destroy()
+    def on_main_widget_destroy(self, _):
+        """Exits from GTK's main loop on window's destroying"""
 
-	def on_recent_chooser_menu_item_activated(self, recent_chooser_menu):
-		"""Opening of a recent file"""
-		uri = recent_chooser_menu.get_current_uri()
-		print("uri: ", uri)
-		filepath = parse.unquote(parse.urlsplit(uri).path)
-		print("filepath: ", filepath)
-		self._open_file_callback(filepath)
+        # internal calls to close properly the current opened project
+        try:
+            self.parent.close_file()
+        finally:
+            # Exits the program
+            Gtk.main_quit()
 
-	@staticmethod
-	def on_credits_activate(about_dialog):
-		"""Shows the about_dialog"""
-		about_dialog.run()
-		about_dialog.hide()
+    def on_gtk_close_activate(self, _):
+        """Close the current project without exitting the app"""
+        self.parent.close_file()
 
-	def _open_file_callback(self, filepath):
-		"""Open file located at `filepath`"""
-		if self.parent:
-			self.parent.open_file(filepath)
-		else:
-			print("window callback")
-			with open(filepath, "r") as file:
-				print(">>>")
-				print(json.load(file))
-				print("<<<")
+    def on_full_screen_toggled(self, check_menu_item):
+        """(Un)Fullscreens the app when the check_menu_item changes state"""
+        if check_menu_item.get_active():
+            self.main_widget.fullscreen()
+        else:
+            self.main_widget.unfullscreen()
+
+    def on_open_file_activate(self, _):
+        """Opening of a file"""
+        dialog = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.OPEN)
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+            Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        dialog.set_transient_for(self.main_widget)
+        file_filter = Gtk.FileFilter()
+        file_filter.add_pattern("*.theatre")
+        dialog.add_filter(file_filter)
+        dialog.modal = True
+        answer = dialog.run()
+        try:
+            if answer == Gtk.ResponseType.OK:
+                self._open_file_callback(dialog.get_filename())
+        finally:
+            dialog.destroy()
+
+    def on_recent_chooser_menu_item_activated(self, recent_chooser_menu):
+        """Opening of a recent file"""
+        uri = recent_chooser_menu.get_current_uri()
+        print("uri: ", uri)
+        filepath = parse.unquote(parse.urlsplit(uri).path)
+        print("filepath: ", filepath)
+        self._open_file_callback(filepath)
+
+    @staticmethod
+    def on_credits_activate(about_dialog):
+        """Shows the about_dialog"""
+        about_dialog.run()
+        about_dialog.hide()
+
+    def _open_file_callback(self, filepath):
+        """Open file located at `filepath`"""
+        if self.parent:
+            self.parent.open_file(filepath)
+        else:
+            print("window callback")
+            with open(filepath, "r") as file_queried:
+                print(">>>")
+                print(json.load(file_queried))
+                print("<<<")
+
+    def on_active_tab_changed(self, _, __, page_number):
+        """When the user changes active tab"""
+        if page_number:
+            self.parent.switch_to_edit_mode()
+        else:
+            self.parent.switch_to_playing_mode()
 
 if __name__ == "__main__":
-	Window().show()
-	Gtk.main()
+    print("Please run app.py")

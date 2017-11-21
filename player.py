@@ -1,13 +1,21 @@
 #!/usr/bin/python3
-# -*- coding:UTF-8 -*-
+# -*- coding:utf-8 -*-
 
-import gi
+try:
+    import pgi
+    pgi.install_as_gi()
+except ImportError:
+    pass
+try:
+    import gi
+except ImportError as e:
+    raise ImportError("Python bindings for gobject are not available. Please install them.")
 import os
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gst", "1.0")
 from gi.repository import Gtk, Gst, GLib
 
-class Player:
+class Player(object):
 	"""
 	Audio player element.
 
@@ -133,7 +141,7 @@ class Player:
 	@staticmethod
 	def convert_ns(time):
 		"""Converts a number of nanoseconds in a readable time"""
-		s, ns = divmod(time, Gst.SECOND)
+		s, _ = divmod(time, Gst.SECOND)
 		m, s = divmod(s, 60)
 
 		if m < 60:
@@ -166,7 +174,7 @@ class Player:
 
 		return self.playing
 
-	def on_play_button_clicked(self, button):
+	def on_play_button_clicked(self, _):
 		"""When the play/pause button is clicked"""
 		if self.playing:
 			self.pause()
@@ -177,17 +185,17 @@ class Player:
 		"""When the user changes the volume via the GUI"""
 		self._volume.set_property("volume", float(adjustment.get_value()))
 
-	def on_slider_seek(self, widget):
+	def on_slider_seek(self, _):
 		seek_time = self.slider_position.get_value()
 		self._pipeline.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT, seek_time * Gst.SECOND)
 		self.time_update()
 
-	def on_decoder_add_pad(self, bin, pad):
+	def on_decoder_add_pad(self, _, pad):
 		"""When the stream's decoder has an available pad"""
 		sink = self._queue.get_static_pad("sink")
 		pad.link(sink)
 
-	def on_pipeline_message(self, bus, message):
+	def on_pipeline_message(self, _, message):
 		"""When the pipeline emits messages via its bus"""
 		msg_type = message.type
 		if msg_type == Gst.MessageType.EOS:
@@ -219,12 +227,4 @@ class Player:
 			self.play_button_label.set_text(PAUSE)
 
 if __name__ == "__main__":
-	import sys
-	from window import Window
-	from lecture import Lecture
-	player = Player()
-	lecture = Lecture(player)
-	window = Window()
-	window.set_content(lecture)
-	window.show()
-	Gtk.main()
+	print("Please run app.py")

@@ -9,7 +9,7 @@ audio player to use in plays.
 ## Requirements
 
 - Python 3
-- GObject binding for Python 3 : python-gi
+- GObject binding for Python 3 : pgi or python-gi
   - Gtk+ 3.0
   - Gst 1.0
 
