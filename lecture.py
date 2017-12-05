@@ -48,7 +48,7 @@ class Lecture(object):
         self.song_list = Gtk.Box.new(Gtk.Orientation.VERTICAL, 3)
         interface.get_object('song_scroll').add(self.song_list)
         self.song_list.show()
-        
+
 
         # Setting the audio player
         if player:
