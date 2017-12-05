@@ -1,6 +1,6 @@
 # SoundOrganiser's offline app
 
-[![Build Status](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app.svg?branch=master)](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app) [![Code Health](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master/landscape.svg?style=flat)](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master) [![Dependency Status](https://gemnasium.com/badges/github.com/nils-van-zuijlen/sound-organiser-offline-app.svg)](https://gemnasium.com/github.com/nils-van-zuijlen/sound-organiser-offline-app)
+[![Build Status](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app.svg?branch=master)](https://travis-ci.org/nils-van-zuijlen/sound-organiser-offline-app) [![Code Health](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master/landscape.svg?style=flat)](https://landscape.io/github/nils-van-zuijlen/sound-organiser-offline-app/master) [![Dependency Status](https://gemnasium.com/badges/github.com/nils-van-zuijlen/sound-organiser-offline-app.svg)](https://gemnasium.com/github.com/nils-van-zuijlen/sound-organiser-offline-app) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dc69819cbddb4cf6a749d9bad8bd9c25)](https://www.codacy.com/app/nilsdu29/sound-organiser-offline-app?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nils-van-zuijlen/sound-organiser-offline-app&amp;utm_campaign=Badge_Grade)
 
 
 Here is [SoundOrganiser](//github.com/nils-van-zuijlen/sound-organiser). It's an
